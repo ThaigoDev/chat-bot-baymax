@@ -3,509 +3,88 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chatbot de Saúde - React/Vite</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-
-        :root {
-            --background-dark: #111;
-            --background-light: #1D1D1D;
-            --text-light: #fff;
-            --text-dark: #111;
-            --primary-green: #A8FF78;
-            --secondary-purple: #DA78FF;
-            --gray-1: #222;
-            --gray-2: #333;
-            --gray-3: #4E4E4E;
-        }
-
-        body {
-            margin: 0;
-            font-family: 'Inter', sans-serif;
-            background-color: var(--background-dark);
-            color: var(--text-light);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        #root {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #000;
-        }
-
-        .app-container {
-            width: 100%;
-            max-width: 420px;
-            height: 100%;
-            max-height: 896px;
-            background: var(--background-dark);
-            border-radius: 20px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        /* --- Estilos da Home Screen --- */
-        .home-screen {
-            flex: 1;
-            background: linear-gradient(to bottom, var(--background-light), var(--background-dark));
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .home-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 20px;
-            margin-bottom: 40px;
-        }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 20px;
-            background-color: var(--gray-2);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 12px;
-        }
-
-        .greeting-text {
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        .home-title-container {
-            margin-bottom: 30px;
-            position: relative;
-        }
-        
-        .home-title {
-            font-size: 40px;
-            font-weight: 900;
-            line-height: 1.2;
-            margin: 0;
-        }
-        
-        .main-action-card {
-            background-color: var(--primary-green);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 15px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            position: relative;
-        }
-
-        .main-action-card:hover {
-            transform: scale(1.02);
-        }
-
-        .main-action-text {
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--text-dark);
-            margin-top: 10px;
-            margin-bottom: 20px;
-        }
-
-        .arrow-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 20px;
-            background-color: rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            right: 20px;
-            top: 20px;
-        }
-
-        .secondary-action-row {
-            display: flex;
-            gap: 15px;
-        }
-
-        .secondary-action-card {
-            flex: 1;
-            border-radius: 20px;
-            padding: 20px;
-            background-color: var(--secondary-purple);
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        .secondary-action-text {
-            font-size: 16px;
-            font-weight: bold;
-            color: var(--text-light);
-            margin-top: 8px;
-        }
-
-        .history-section {
-            margin-top: 40px;
-        }
-
-        .history-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .history-item {
-            display: flex;
-            align-items: center;
-            background-color: var(--gray-1);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 10px;
-        }
-
-        .history-icon {
-            background-color: var(--gray-2);
-            width: 30px;
-            height: 30px;
-            min-width: 30px;
-            border-radius: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 15px;
-        }
-        
-        /* --- Estilos do Chat Screen --- */
-        .chat-screen {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--background-dark);
-            position: relative;
-        }
-
-        .chat-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px;
-            background-color: var(--background-light);
-            border-bottom: 1px solid var(--gray-2);
-            z-index: 10;
-        }
-        
-        .chat-header button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 5px;
-        }
-
-        .chat-title {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .status-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 5px;
-            background-color: var(--primary-green);
-        }
-
-        .orb {
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            border-radius: 100px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(45deg, var(--secondary-purple), var(--primary-green));
-            opacity: 0.1;
-            filter: blur(20px);
-        }
-        
-        .messages-list {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .message-bubble {
-            max-width: 80%;
-            padding: 12px 18px;
-            border-radius: 20px;
-            line-height: 1.5;
-            white-space: pre-wrap; /* Mantém as quebras de linha */
-        }
-        
-        .message-bubble.user {
-            background-color: var(--primary-green);
-            color: var(--text-dark);
-            border-bottom-right-radius: 5px;
-            align-self: flex-end;
-        }
-
-        .message-bubble.bot {
-            background-color: var(--gray-2);
-            color: var(--text-light);
-            border-bottom-left-radius: 5px;
-            align-self: flex-start;
-        }
-        
-        .typing-indicator {
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            align-self: flex-start;
-        }
-
-        .typing-indicator-text {
-            margin-left: 10px;
-            color: var(--primary-green);
-            font-size: 14px;
-        }
-
-        .chat-input-form {
-            display: flex;
-            padding: 10px;
-            background-color: var(--background-light);
-            border-top: 1px solid var(--gray-2);
-            z-index: 10;
-        }
-
-        .chat-input-form input {
-            flex: 1;
-            background-color: var(--gray-1);
-            border: 1px solid var(--gray-2);
-            border-radius: 20px;
-            padding: 10px 15px;
-            color: var(--text-light);
-            font-size: 16px;
-            margin-right: 10px;
-        }
-        
-        .chat-input-form input:focus {
-            outline: none;
-            border-color: var(--primary-green);
-        }
-
-        .chat-input-form button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .spinner {
-            border: 2px solid rgba(168, 255, 120, 0.3);
-            border-top: 2px solid var(--primary-green);
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-    </style>
+    <title>Chatbot de Saúde - HTML/CSS/JS</title>
+    <link rel="stylesheet" href="src/css/main.css">
 </head>
 <body>
-    <div id="root"></div>
-
-    <script type="text/babel">
-        const { useState, useCallback, useEffect, useRef } = React;
-
-        // --- ÍCONES SVG ---
-        const UserIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>;
-        const RobotIcon = () => <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 8V4H8v4H4v8h16V8h-8z"></path><path d="M16 8h4v8h-4V8z"></path><path d="M12 16h0"></path><path d="M9 13h6"></path><path d="M12 4a2 2 0 0 1 2 2v2H10V6a2 2 0 0 1 2-2z"></path></svg>;
-        const PillIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path><path d="m8.5 8.5 7 7"></path></svg>;
-        const DocumentIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>;
-        const ArrowRightIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>;
-        const InfoIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>;
-        const ChevronLeftIcon = () => <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A8FF78" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>;
-        const SendIcon = () => <svg width="32" height="32" viewBox="0 0 24 24" fill="#A8FF78" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m12 16 4-4-4-4M8 12h8" stroke="#111" strokeWidth="1.5"></path></svg>;
-
-        // --- LÓGICA DA API GEMINI ---
-        const getBotResponse = async (userMessage) => {
-          const apiKey = "AIzaSyA-dOeIi5wpXzyUhDkLrFOyNELcodN_yWM"; 
-          const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-          const prompt = `Você é um assistente de saúde virtual. O seu nome é G-Health. Responda à seguinte pergunta de forma simples, clara e em linguagem completamente leiga, como se estivesse a falar com alguém sem qualquer conhecimento médico. Evite ao máximo jargões técnicos.
-          No final de cada resposta, adicione sempre, em uma nova linha, o aviso: "Lembre-se, esta informação não substitui uma consulta médica."
-          Pergunta do utilizador: "${userMessage}"`;
-          
-          const payload = { contents: [{ parts: [{ text: prompt }] }] };
-
-          try {
-            const response = await fetch(apiUrl, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload),
-            });
-            if (!response.ok) throw new Error(`API Error: ${response.status}`);
-            const result = await response.json();
-            if (result.candidates && result.candidates.length > 0 && result.candidates[0].content.parts.length > 0) {
-              return result.candidates[0].content.parts[0].text.trim();
-            }
-            return 'Peço desculpa, mas não consegui processar a sua resposta neste momento.';
-          } catch (error) {
-            console.error("Erro ao contactar a API do Gemini:", error);
-            return 'Lamento, estou com dificuldades técnicas. Por favor, tente novamente mais tarde.';
-          }
-        };
-
-        // --- COMPONENTES DA UI ---
-        const HomeScreen = ({ onStartChat }) => (
-            <div className="home-screen">
-                <header className="home-header">
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <div className="avatar"><UserIcon /></div>
-                        <h1 className="greeting-text">Olá!</h1>
+    <div class="app-container">
+        <!-- Ecrã Inicial -->
+        <div id="home-screen" class="screen active">
+            <div class="home-content">
+                <header class="home-header">
+                    <div class="avatar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     </div>
+                    <h1 class="greeting-text">Olá!</h1>
                 </header>
                 <main>
-                    <div className="home-title-container">
-                        <h2 className="home-title">Como posso ajudá-lo hoje?</h2>
+                    <div class="home-title-container">
+                        <h2 class="home-title">Como posso ajudá-lo hoje?</h2>
                     </div>
-                    <section className="action-grid">
-                        <button className="main-action-card" onClick={onStartChat}>
-                            <RobotIcon />
-                            <p className="main-action-text">Conversar com o Bot</p>
-                            <div className="arrow-icon"><ArrowRightIcon /></div>
-                        </button>
-                        <div className="secondary-action-row">
-                            <div className="secondary-action-card" style={{ backgroundColor: '#DA78FF' }}>
-                                <PillIcon />
-                                <p className="secondary-action-text">Lembretes</p>
+                    <section class="action-grid">
+                        <button class="main-action-card" id="start-chat-btn">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8v4H4v8h16V8h-8z"></path><path d="M16 8h4v8h-4V8z"></path><path d="M12 16h0"></path><path d="M9 13h6"></path><path d="M12 4a2 2 0 0 1 2 2v2H10V6a2 2 0 0 1 2-2z"></path></svg>
+                            <p class="main-action-text">Conversar com o Bot</p>
+                            <div class="arrow-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                             </div>
-                            <div className="secondary-action-card" style={{ backgroundColor: '#4E4E4E' }}>
-                                <DocumentIcon />
-                                <p className="secondary-action-text">Artigos</p>
+                        </button>
+                        <div class="secondary-action-row">
+                            <div class="secondary-action-card" style="background-color: #DA78FF;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path><path d="m8.5 8.5 7 7"></path></svg>
+                                <p class="secondary-action-text">Lembretes</p>
+                            </div>
+                            <div class="secondary-action-card" style="background-color: #4E4E4E;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                <p class="secondary-action-text">Artigos</p>
                             </div>
                         </div>
                     </section>
-                    <section className="history-section">
-                        <h3 className="history-title">Histórico</h3>
-                        <div className="history-item">
-                            <div className="history-icon"><InfoIcon /></div>
+                    <section class="history-section">
+                        <h3 class="history-title">Histórico</h3>
+                        <div class="history-item">
+                            <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
                             <p>O que é dengue?</p>
                         </div>
-                        <div className="history-item">
-                            <div className="history-icon"><InfoIcon /></div>
+                        <div class="history-item">
+                            <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
                             <p>Sintomas de gripe</p>
                         </div>
                     </section>
-                </main>
+                </div>
+        </div>
+
+        <!-- Ecrã de Chat -->
+        <div id="chat-screen" class="screen">
+            <div class="orb"></div>
+            <header class="chat-header">
+                <button id="back-to-home-btn" aria-label="Voltar">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A8FF78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <h2 class="chat-title">Assistente de Saúde</h2>
+                <div class="status-indicator"></div>
+            </header>
+            <div class="messages-list" id="messages-list">
+                <!-- As mensagens serão inseridas aqui via JS -->
             </div>
-        );
-
-        const ChatScreen = ({ onGoBack }) => {
-            const [messages, setMessages] = useState([]);
-            const [inputValue, setInputValue] = useState('');
-            const [isTyping, setIsTyping] = useState(false);
-            const messagesEndRef = useRef(null);
-            
-            const scrollToBottom = () => {
-                messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-            };
-
-            useEffect(scrollToBottom, [messages, isTyping]);
-            
-            useEffect(() => {
-                setMessages([
-                    { id: 1, text: 'Olá! Sou G-Health, o seu assistente de saúde. Como posso ajudar?', sender: 'bot' },
-                ]);
-            }, []);
-
-            const handleSend = async (e) => {
-                e.preventDefault();
-                if (!inputValue.trim()) return;
-
-                const userMessage = { id: Date.now(), text: inputValue, sender: 'user' };
-                setMessages(prev => [...prev, userMessage]);
-                setInputValue('');
-                setIsTyping(true);
-
-                const botResponseText = await getBotResponse(userMessage.text);
-                setIsTyping(false);
-
-                const botMessage = { id: Date.now() + 1, text: botResponseText, sender: 'bot' };
-                setMessages(prev => [...prev, botMessage]);
-            };
-
-            return (
-                <div className="chat-screen">
-                    <div className="orb"></div>
-                    <header className="chat-header">
-                        <button onClick={onGoBack} aria-label="Voltar"><ChevronLeftIcon /></button>
-                        <h2 className="chat-title">Assistente de Saúde</h2>
-                        <div className="status-indicator"></div>
-                    </header>
-                    <div className="messages-list">
-                        {messages.map(msg => (
-                            <div key={msg.id} className={`message-bubble ${msg.sender}`}>
-                                {msg.text}
-                            </div>
-                        ))}
-                        {isTyping && (
-                            <div className="typing-indicator">
-                                <div className="spinner"></div>
-                                <p className="typing-indicator-text">G-Health está a pensar...</p>
-                            </div>
-                        )}
-                        <div ref={messagesEndRef} />
-                    </div>
-                    <form className="chat-input-form" onSubmit={handleSend}>
-                        <input
-                            type="text"
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            placeholder="Digite a sua dúvida aqui..."
-                            disabled={isTyping}
-                        />
-                        <button type="submit" disabled={isTyping || !inputValue.trim()} aria-label="Enviar">
-                            <SendIcon />
-                        </button>
-                    </form>
-                </div>
-            );
-        };
-
-        const App = () => {
-            const [screen, setScreen] = useState('home'); // 'home' ou 'chat'
-
-            return (
-                <div className="app-container">
-                    {screen === 'home' 
-                        ? <HomeScreen onStartChat={() => setScreen('chat')} /> 
-                        : <ChatScreen onGoBack={() => setScreen('home')} />
-                    }
-                </div>
-            );
-        };
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
+            <div class="typing-indicator hidden" id="typing-indicator">
+                <div class="spinner"></div>
+                <p class="typing-indicator-text">B.I.A está a pensar...</p>
+            </div>
+            <div class="chat-input-container">
+                 <div class="reply-context" id="reply-context">
+                    <span id="reply-context-text"></span>
+                    <button class="reply-context-close" id="reply-context-close">&times;</button>
+                 </div>
+                 <form class="chat-input-form" id="chat-form">
+                    <input type="text" id="chat-input" placeholder="Digite a sua dúvida aqui..." autocomplete="off"/>
+                    <button type="submit" id="send-btn" aria-label="Enviar">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="#A8FF78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m12 16 4-4-4-4M8 12h8" stroke="#111" stroke-width="1.5"></path></svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="/src/js/main.js"></script>
 </body>
 </html>
