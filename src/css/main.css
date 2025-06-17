@@ -308,7 +308,8 @@ body {
     border: none;
     cursor: pointer;
     padding: 4px;
-    opacity: 0;
+    opacity: 0; 
+    color: white;
     transition: opacity 0.2s;
 }
 
