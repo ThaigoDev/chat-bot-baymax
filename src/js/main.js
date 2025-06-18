@@ -107,10 +107,10 @@ document.addEventListener('DOMContentLoaded', () => {
             promptContext = `Em resposta à afirmação anterior do assistente: "${contextMessage}", o utilizador pergunta:`;
         }
 
-        const prompt = `Você é um assistente de saúde virtual. O seu nome é B.I.A. Responda à seguinte pergunta de forma simples, clara e em linguagem completamente leiga, como se estivesse a falar com alguém sem qualquer conhecimento médico. Evite ao máximo jargões técnicos.
+        const prompt = `Você é um assistente de saúde virtual. O seu nome é B.I.A. Responda à seguinte pergunta de forma simples, clara e em linguagem completamente leiga, como se estivesse a falar com alguém sem qualquer conhecimento médico. Evite ao máximo jargões técnicos. 
         ${promptContext}
         Pergunta do utilizador: "${userMessage}"
-        No final de cada resposta, adicione sempre, em uma nova linha, o aviso: "Lembre-se, esta informação não substitui uma consulta médica."`;
+        No final de cada resposta, adicione sempre, em uma nova linha, o aviso: "Lembre-se, esta informação não substitui uma consulta médica." Se a pergunta não for relacionada à saúde, retorne uma resposta dizendo que não foi programado para responder perguntas assim e não utilize a frase "Lembre-se, esta informação não substitui uma consulta médica." caso a resposta não esteja de acordo com saúde. NUNCA RESPONDA NADA QUE NÃO ESTEJA NO CONTEXTO DE SAÚDE.`;
         
         const payload = { contents: [{ parts: [{ text: prompt }] }] };
 
