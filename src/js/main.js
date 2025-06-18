@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Seletores de Elementos ---
+    // --- Seletores de Elementos (sem alterações) ---
     const homeScreen = document.getElementById('home-screen');
     const chatScreen = document.getElementById('chat-screen');
     const startChatBtn = document.getElementById('start-chat-btn');
@@ -13,9 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const replyContextText = document.getElementById('reply-context-text');
     const replyContextCloseBtn = document.getElementById('reply-context-close');
 
+    // --- ALTERAÇÃO 1: Variáveis de Estado ---
+    // Array para guardar o histórico da conversa no formato que a API do Gemini espera.
+    let conversationHistory = [];
     let replyMessageContent = null;
 
-    // --- Lógica de Navegação ---
+    // --- Lógica de Navegação (sem alterações) ---
     startChatBtn.addEventListener('click', () => {
         homeScreen.classList.remove('active');
         chatScreen.classList.add('active');
@@ -26,17 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
         homeScreen.classList.add('active');
     });
 
-    // --- Lógica do Chat ---
-    // ALTERAÇÃO 1: A função agora aceita um terceiro parâmetro opcional "replyToText".
+    // --- Lógica do Chat (função addMessage sem alterações) ---
     const addMessage = (text, sender, replyToText = null) => {
         const wrapper = document.createElement('div');
         wrapper.classList.add('message-wrapper', sender);
-
         const messageBubble = document.createElement('div');
         messageBubble.classList.add('message-bubble', sender);
 
-        // ALTERAÇÃO 2: Se for uma mensagem do usuário e houver um texto de resposta,
-        // cria o elemento visual da citação.
         if (sender === 'user' && replyToText) {
             const replyQuote = document.createElement('div');
             replyQuote.classList.add('reply-quote');
@@ -44,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
             messageBubble.appendChild(replyQuote);
         }
         
-        // Adiciona o texto principal da mensagem
         const mainMessageText = document.createTextNode(text);
         messageBubble.appendChild(mainMessageText);
         
@@ -59,9 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             wrapper.appendChild(messageBubble);
         }
-
         messagesList.appendChild(wrapper);
-        messagesList.scrollTop = messagesList.scrollHeight; // Scroll para o fim
+        messagesList.scrollTop = messagesList.scrollHeight;
     };
 
     const setReplyContext = (text) => {
@@ -79,35 +76,34 @@ document.addEventListener('DOMContentLoaded', () => {
     replyContextCloseBtn.addEventListener('click', clearReplyContext);
 
     const toggleTypingIndicator = (show) => {
-        if(show) {
-            typingIndicator.classList.remove('hidden');
-        } else {
-            typingIndicator.classList.add('hidden');
-        }
+        typingIndicator.classList.toggle('hidden', !show);
         messagesList.scrollTop = messagesList.scrollHeight;
     }
 
+    // --- ALTERAÇÃO 2: Lógica de Envio de Formulário ---
     chatForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const userMessage = chatInput.value.trim();
         if (!userMessage) return;
 
-        // Captura o contexto ANTES de limpar
-        let contextMessage = replyMessageContent;
-        
-        // ALTERAÇÃO 3: Passa o "contextMessage" para a função addMessage
-        // para que ela possa exibir a citação visualmente.
+        const contextMessage = replyMessageContent; // Pega o texto do reply, se houver.
         addMessage(userMessage, 'user', contextMessage);
         
+        // Desabilita o input enquanto espera a resposta.
         chatInput.value = '';
         chatInput.disabled = true;
         sendBtn.disabled = true;
         toggleTypingIndicator(true);
-        
         clearReplyContext();
 
-        const botResponse = await getBotResponse(userMessage, contextMessage);
+        // Chama a API com o histórico e a nova mensagem.
+        const botResponse = await getBotResponse(conversationHistory, userMessage, contextMessage);
         
+        // Adiciona a mensagem do usuário e a resposta do bot ao histórico para a próxima chamada.
+        conversationHistory.push({ role: 'user', parts: [{ text: userMessage }] });
+        conversationHistory.push({ role: 'model', parts: [{ text: botResponse }] });
+        
+        // Mostra a resposta do bot e reabilita o input.
         addMessage(botResponse, 'bot');
         toggleTypingIndicator(false);
         chatInput.disabled = false;
@@ -115,30 +111,40 @@ document.addEventListener('DOMContentLoaded', () => {
         chatInput.focus();
     });
     
-    // --- LÓGICA DA API (NÃO PRECISA MUDAR) ---
-    const getBotResponse = async (userMessage, contextMessage) => {
-        const apiUrl = `https://chat-bot-bia-api.onrender.com/send-msg`; 
-        let promptContext = '';
-        if (contextMessage) {
-            promptContext = `Em resposta à afirmação anterior do assistente: "${contextMessage}", o utilizador pergunta:`;
+    // --- ALTERAÇÃO 3: Lógica de chamada da API ---
+    const getBotResponse = async (history, newMessage, contextMessage) => {
+        const apiUrl = `https://chat-bot-bia-api.onrender.com/send-msg`; // << Substitua pela sua URL se for diferente
+        
+        // O prompt de sistema define o comportamento da IA e não precisa ser repetido no histórico.
+        const systemInstruction = `Você é um assistente de saúde virtual chamado B.I.A. Responda de forma simples, clara e em linguagem leiga, evitando jargões técnicos. Ao final de cada resposta sobre saúde, adicione em uma nova linha o aviso: "Lembre-se, esta informação não substitui uma consulta médica.". Se a pergunta não for sobre saúde, diga que não foi programado para isso e não adicione o aviso. NUNCA RESPONDA NADA FORA DO CONTEXTO DE SAÚDE.`;
+        
+        // Se o usuário está respondendo a uma mensagem específica, damos uma dica extra para a IA.
+        let messageToSend = newMessage;
+        if(contextMessage) {
+            messageToSend = `(Respondendo à sua mensagem anterior: "${contextMessage}")\n\n${newMessage}`;
         }
-        const prompt = `Você é um assistente de saúde virtual. O seu nome é B.I.A. Responda à seguinte pergunta de forma simples, clara e em linguagem completamente leiga, como se estivesse a falar com alguém sem qualquer conhecimento médico. Evite ao máximo jargões técnicos. 
-        ${promptContext}
-        Pergunta do utilizador: "${userMessage}"
-        No final de cada resposta, adicione sempre, em uma nova linha, o aviso: "Lembre-se, esta informação não substitui uma consulta médica." Se a pergunta não for relacionada à saúde, retorne uma resposta dizendo que não foi programado para responder perguntas assim e não utilize a frase "Lembre-se, esta informação não substitui uma consulta médica." caso a resposta não esteja de acordo com saúde. NUNCA RESPONDA NADA QUE NÃO ESTEJA NO CONTEXTO DE SAÚDE.`;
-        const payload = { prompt: prompt };
+        
+        const payload = {
+            // O histórico é enviado para dar contexto à IA.
+            // A instrução do sistema é adicionada no início do histórico.
+            history: [
+                { role: 'user', parts: [{ text: systemInstruction }]},
+                { role: 'model', parts: [{ text: 'Entendido. Sou a B.I.A, sua assistente de saúde. Pode perguntar.'}]},
+                ...history // Inclui todo o histórico da conversa atual.
+            ],
+            // A mensagem atual do usuário é enviada separadamente.
+            newMessage: messageToSend
+        };
+
         try {
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
             });
-            if (!response.ok) throw new Error(`API Error: ${response.status}`);
+            if (!response.ok) throw new Error(`API Error: ${response.status} ${response.statusText}`);
             const result = await response.json();
-            if (result && result.msg) {
-                return result.msg.trim();
-            }
-            return 'Peço desculpa, mas não consegui processar a sua resposta neste momento.';
+            return result.msg ? result.msg.trim() : 'Não consegui processar a resposta neste momento.';
         } catch (error) {
             console.error("Erro ao contactar o backend:", error);
             return 'Lamento, estou com dificuldades técnicas. Por favor, tente novamente mais tarde.';
