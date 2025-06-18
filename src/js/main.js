@@ -27,15 +27,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Lógica do Chat ---
-    const addMessage = (text, sender) => {
+    // ALTERAÇÃO 1: A função agora aceita um terceiro parâmetro opcional "replyToText".
+    const addMessage = (text, sender, replyToText = null) => {
         const wrapper = document.createElement('div');
         wrapper.classList.add('message-wrapper', sender);
 
         const messageBubble = document.createElement('div');
         messageBubble.classList.add('message-bubble', sender);
-        messageBubble.textContent = text;
+
+        // ALTERAÇÃO 2: Se for uma mensagem do usuário e houver um texto de resposta,
+        // cria o elemento visual da citação.
+        if (sender === 'user' && replyToText) {
+            const replyQuote = document.createElement('div');
+            replyQuote.classList.add('reply-quote');
+            replyQuote.textContent = replyToText;
+            messageBubble.appendChild(replyQuote);
+        }
         
-        if(sender === 'bot') {
+        // Adiciona o texto principal da mensagem
+        const mainMessageText = document.createTextNode(text);
+        messageBubble.appendChild(mainMessageText);
+        
+        if (sender === 'bot') {
             const replyBtn = document.createElement('button');
             replyBtn.classList.add('reply-btn');
             replyBtn.setAttribute('aria-label', 'Responder');
@@ -71,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             typingIndicator.classList.add('hidden');
         }
-         messagesList.scrollTop = messagesList.scrollHeight;
+        messagesList.scrollTop = messagesList.scrollHeight;
     }
 
     chatForm.addEventListener('submit', async (e) => {
@@ -79,13 +92,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const userMessage = chatInput.value.trim();
         if (!userMessage) return;
 
-        addMessage(userMessage, 'user');
+        // Captura o contexto ANTES de limpar
+        let contextMessage = replyMessageContent;
+        
+        // ALTERAÇÃO 3: Passa o "contextMessage" para a função addMessage
+        // para que ela possa exibir a citação visualmente.
+        addMessage(userMessage, 'user', contextMessage);
+        
         chatInput.value = '';
         chatInput.disabled = true;
         sendBtn.disabled = true;
         toggleTypingIndicator(true);
         
-        let contextMessage = replyMessageContent;
         clearReplyContext();
 
         const botResponse = await getBotResponse(userMessage, contextMessage);
@@ -97,37 +115,32 @@ document.addEventListener('DOMContentLoaded', () => {
         chatInput.focus();
     });
     
-    // --- LÓGICA DA API GEMINI ---
+    // --- LÓGICA DA API (NÃO PRECISA MUDAR) ---
     const getBotResponse = async (userMessage, contextMessage) => {
-        const apiKey = "AIzaSyA-dOeIi5wpXzyUhDkLrFOyNELcodN_yWM"; // A plataforma irá fornecer a chave em tempo de execução
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
+        const apiUrl = `https://chat-bot-bia-api.onrender.com/send-msg`; 
         let promptContext = '';
         if (contextMessage) {
             promptContext = `Em resposta à afirmação anterior do assistente: "${contextMessage}", o utilizador pergunta:`;
         }
-
         const prompt = `Você é um assistente de saúde virtual. O seu nome é B.I.A. Responda à seguinte pergunta de forma simples, clara e em linguagem completamente leiga, como se estivesse a falar com alguém sem qualquer conhecimento médico. Evite ao máximo jargões técnicos. 
         ${promptContext}
         Pergunta do utilizador: "${userMessage}"
         No final de cada resposta, adicione sempre, em uma nova linha, o aviso: "Lembre-se, esta informação não substitui uma consulta médica." Se a pergunta não for relacionada à saúde, retorne uma resposta dizendo que não foi programado para responder perguntas assim e não utilize a frase "Lembre-se, esta informação não substitui uma consulta médica." caso a resposta não esteja de acordo com saúde. NUNCA RESPONDA NADA QUE NÃO ESTEJA NO CONTEXTO DE SAÚDE.`;
-        
-        const payload = { contents: [{ parts: [{ text: prompt }] }] };
-
+        const payload = { prompt: prompt };
         try {
             const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
             });
             if (!response.ok) throw new Error(`API Error: ${response.status}`);
             const result = await response.json();
-            if (result.candidates && result.candidates.length > 0 && result.candidates[0].content.parts.length > 0) {
-                return result.candidates[0].content.parts[0].text.trim();
+            if (result && result.msg) {
+                return result.msg.trim();
             }
             return 'Peço desculpa, mas não consegui processar a sua resposta neste momento.';
         } catch (error) {
-            console.error("Erro ao contactar a API do Gemini:", error);
+            console.error("Erro ao contactar o backend:", error);
             return 'Lamento, estou com dificuldades técnicas. Por favor, tente novamente mais tarde.';
         }
     };

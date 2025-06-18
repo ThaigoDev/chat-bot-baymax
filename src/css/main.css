@@ -312,7 +312,21 @@ body {
     color: white;
     transition: opacity 0.2s;
 }
-
+ 
+/* Estilo para a citação dentro da bolha de mensagem do usuário */
+.reply-quote {
+    background-color: rgba(0, 0, 0, 0.05); /* Um fundo levemente mais escuro */
+    border-left: 3px solid #005ae0; /* Uma barra lateral para indicar a citação */
+    padding: 6px 10px;
+    margin-bottom: 8px; /* Espaço entre a citação e a mensagem de resposta */
+    border-radius: 5px;
+    font-size: 0.9em; /* Fonte um pouco menor */
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Adiciona "..." se o texto for muito longo */
+    max-width: 100%;
+}
 .message-wrapper:hover .reply-btn {
     opacity: 0.7;
 }
