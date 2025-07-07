@@ -5,24 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Artigos de Saúde - B.I.A</title>
     <link rel="stylesheet" href="src/css/main.css">
+    <link rel="stylesheet" href="src/css/artigos.css">
 </head>
 <body>
     <div class="app-container">
-        <div id="articles-screen">
-            <header class="chat-header">
-                <a href="index.html" aria-label="Voltar" style="background: none; border: none; cursor: pointer; padding: 5px;">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A8FF78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <div id="articles-screen" class="screen active">
+            
+            <header class="articles-header">
+                <a href="index.html" class="back-button" aria-label="Voltar para Home">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    <span>Início</span>
                 </a>
-                <h2 class="chat-title">Artigos de Saúde</h2>
-                <div style="width: 28px;"></div>
+                <h1>Artigos</h1>
+                <div class="header-spacer"></div>
             </header>
 
-            <div class="articles-list" id="articles-list">
-                 <p class="info-text">Carregando artigos...</p>
-            </div>
+            <main class="articles-main-content">
+
+                <div class="search-wrapper">
+                    <form id="search-form" class="search-form">
+                        <input type="text" id="search-input" placeholder="Buscar por termos como 'dengue', 'ansiedade'..." autocomplete="off">
+                        <button type="submit" aria-label="Pesquisar">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        </button>
+                    </form>
+                </div>
+
+                <div id="results-container" class="results-container">
+                    </div>
+
+            </main>
+
+            <footer id="pagination-footer" class="pagination-footer">
+                <button id="prev-page-btn" class="pagination-btn" disabled>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    Anterior
+                </button>
+                <span id="page-info"></span>
+                <button id="next-page-btn" class="pagination-btn" disabled>
+                    Próxima
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+            </footer>
+
         </div>
     </div>
-
     <script src="src/js/artigos.js"></script>
 </body>
 </html>
