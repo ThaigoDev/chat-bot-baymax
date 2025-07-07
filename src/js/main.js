@@ -243,5 +243,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
-    addMessage('Olá! Sou B.I.A, o seu assistente de saúde. Como posso ajudar?', 'bot');
 });

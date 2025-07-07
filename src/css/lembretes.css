@@ -135,3 +135,47 @@
     padding: 40px 0;
     font-size: 16px;
 }
+
+/* COLE ESTE CÓDIGO NO FINAL DO SEU ARQUIVO: src/css/lembretes.css */
+
+/* --- Media Queries para Responsividade --- */
+
+/* Para telas MUITO pequenas (ex: iPhone 5/SE) */
+@media (max-width: 380px) {
+    .add-reminder-form {
+        flex-direction: column; /* Empilha os campos do formulário */
+        align-items: stretch; /* Faz os campos ocuparem a largura total */
+    }
+
+    .add-reminder-form button {
+        padding: 14px; /* Ajusta o padding do botão no modo vertical */
+    }
+}
+
+
+/* Para tablets e telas um pouco maiores */
+@media (min-width: 600px) {
+    .reminders-list {
+        /* Muda a lista para um grid de 2 colunas */
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Para telas de desktop, onde o app-container é mais largo */
+@media (min-width: 900px) {
+    .reminders-content {
+        padding: 30px 40px; /* Aumenta o espaçamento interno no desktop */
+    }
+
+    .reminders-list {
+        /* Muda a lista para um grid de 3 colunas */
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* Centraliza e limita a largura do formulário para não ficar esticado demais */
+    .add-reminder-form-section {
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
