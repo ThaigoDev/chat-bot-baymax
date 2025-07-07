@@ -1,8 +1,16 @@
-/* ARQUIVO: src/css/lembretes.css */
+/* SUBSTITUA TODO O CONTEÚDO DE src/css/lembretes.css */
+
+/* --- Layout Principal --- */
+#reminders-screen {
+    background-color: var(--background-dark);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
 
 .reminders-content {
     flex-grow: 1;
-    overflow-y: auto;
+    overflow-y: auto; /* Scroll apenas vertical, no conteúdo */
     padding: 20px;
 }
 
@@ -11,22 +19,23 @@
     line-height: 0;
 }
 
-/* --- Formulário de Adicionar Lembrete --- */
+/* --- Formulário de Adicionar --- */
 .add-reminder-form-section h3 {
     font-size: 18px;
-    font-weight: 700;
-    color: var(--text-light);
     margin: 0 0 15px 0;
 }
 
 .add-reminder-form {
     display: flex;
+    flex-wrap: wrap; /* Permite que os itens quebrem a linha se não couberem */
     gap: 10px;
     margin-bottom: 30px;
 }
 
 .add-reminder-form input[type="text"] {
-    flex-grow: 1;
+    flex-grow: 1; /* Ocupa o espaço que sobrar */
+    flex-basis: 200px; /* Tamanho base antes de crescer/encolher */
+    min-width: 150px; /* Largura mínima */
     background-color: var(--gray-1);
     border: 1px solid var(--gray-2);
     border-radius: 12px;
@@ -34,7 +43,6 @@
     color: var(--text-light);
     font-size: 16px;
     font-family: 'Inter', sans-serif;
-    transition: border-color 0.2s;
 }
 
 .add-reminder-form input[type="time"] {
@@ -45,7 +53,7 @@
     color: var(--text-light);
     font-family: 'Inter', sans-serif;
     font-size: 16px;
-    color-scheme: dark; /* Garante que o seletor de tempo fique escuro */
+    color-scheme: dark;
 }
 
 .add-reminder-form input:focus {
@@ -75,6 +83,8 @@
 .reminders-list {
     display: grid;
     gap: 15px;
+    /* As colunas serão definidas nas media queries abaixo */
+    grid-template-columns: 1fr; /* Padrão de 1 coluna para mobile */
 }
 
 .reminder-card {
@@ -85,26 +95,30 @@
     padding: 20px;
     border-radius: 15px;
     border-left: 5px solid var(--secondary-purple);
-    opacity: 0;
-    transform: translateY(10px);
     animation: fadeIn 0.4s ease forwards;
+    opacity: 0;
 }
 
 .reminder-info {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    /* Impede que o texto quebre o layout */
+    overflow: hidden; 
 }
 
 .reminder-info .time {
     font-size: 22px;
     font-weight: 900;
-    color: var(--text-light);
 }
 
 .reminder-info .text {
     font-size: 16px;
     color: #ccc;
+    /* Impede que texto muito longo quebre o card */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .delete-reminder-btn {
@@ -136,46 +150,25 @@
     font-size: 16px;
 }
 
-/* COLE ESTE CÓDIGO NO FINAL DO SEU ARQUIVO: src/css/lembretes.css */
+/* --- Responsividade Robusta --- */
 
-/* --- Media Queries para Responsividade --- */
-
-/* Para telas MUITO pequenas (ex: iPhone 5/SE) */
-@media (max-width: 380px) {
-    .add-reminder-form {
-        flex-direction: column; /* Empilha os campos do formulário */
-        align-items: stretch; /* Faz os campos ocuparem a largura total */
-    }
-
-    .add-reminder-form button {
-        padding: 14px; /* Ajusta o padding do botão no modo vertical */
-    }
-}
-
-
-/* Para tablets e telas um pouco maiores */
+/* Tablets (modo retrato e paisagem) */
 @media (min-width: 600px) {
     .reminders-list {
-        /* Muda a lista para um grid de 2 colunas */
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-/* Para telas de desktop, onde o app-container é mais largo */
+/* Desktops */
 @media (min-width: 900px) {
-    .reminders-content {
-        padding: 30px 40px; /* Aumenta o espaçamento interno no desktop */
-    }
-
     .reminders-list {
-        /* Muda a lista para um grid de 3 colunas */
         grid-template-columns: repeat(3, 1fr);
     }
+}
 
-    /* Centraliza e limita a largura do formulário para não ficar esticado demais */
-    .add-reminder-form-section {
-        max-width: 700px;
-        margin-left: auto;
-        margin-right: auto;
+/* Desktops com telas muito largas */
+@media (min-width: 1200px) {
+    .reminders-list {
+        grid-template-columns: repeat(4, 1fr);
     }
 }

@@ -13,11 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const replyContextText = document.getElementById('reply-context-text');
     const replyContextCloseBtn = document.getElementById('reply-context-close');
 
-    // --- Variáveis de Estado ---
     let conversationHistory = [];
     let replyMessageContent = null;
 
-    // --- Lógica de Navegação (simplificada) ---
     startChatBtn.addEventListener('click', () => {
         homeScreen.classList.remove('active');
         chatScreen.classList.add('active');
@@ -27,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
         homeScreen.classList.add('active');
     });
 
-    // --- Lógica do Chat (sem alterações) ---
     const addMessage = (text, sender, replyToText = null) => {
         const wrapper = document.createElement('div');
         wrapper.classList.add('message-wrapper', sender);
@@ -136,11 +133,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const replyContextText = document.getElementById('reply-context-text');
     const replyContextCloseBtn = document.getElementById('reply-context-close');
 
-    // --- Variáveis de Estado ---
     let conversationHistory = [];
     let replyMessageContent = null;
 
-    // --- Lógica de Navegação (simplificada) ---
     startChatBtn.addEventListener('click', () => {
         homeScreen.classList.remove('active');
         chatScreen.classList.add('active');
@@ -150,7 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
         homeScreen.classList.add('active');
     });
 
-    // --- Lógica do Chat (sem alterações) ---
     const addMessage = (text, sender, replyToText = null) => {
         const wrapper = document.createElement('div');
         wrapper.classList.add('message-wrapper', sender);
