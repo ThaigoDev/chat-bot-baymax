@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chatbot de Saúde - HTML/CSS/JS</title>
+    <title>Chatbot de Saúde - B.I.A</title>
     <link rel="stylesheet" href="src/css/main.css">
 </head>
 <body>
     <div class="app-container">
-        <!-- Ecrã Inicial -->
         <div id="home-screen" class="screen active">
             <div class="home-content">
                 <header class="home-header">
@@ -30,14 +29,14 @@
                             </div>
                         </button>
                         <div class="secondary-action-row">
-                            <div class="secondary-action-card" style="background-color: #DA78FF;">
+                            <div class="secondary-action-card" style="background-color: #DA78FF; opacity: 0.7; cursor: not-allowed;">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path><path d="m8.5 8.5 7 7"></path></svg>
                                 <p class="secondary-action-text">Lembretes</p>
                             </div>
-                            <div class="secondary-action-card" style="background-color: #4E4E4E;">
+                            <a href="Artigos.html" class="secondary-action-card" style="background-color: #4E4E4E; text-decoration: none; transition: transform 0.2s;">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                                 <p class="secondary-action-text">Artigos</p>
-                            </div>
+                            </a>
                         </div>
                     </section>
                     <section class="history-section">
@@ -51,10 +50,9 @@
                             <p>Sintomas de gripe</p>
                         </div>
                     </section>
-                </div>
+                </main>
+            </div>
         </div>
-
-        <!-- Ecrã de Chat -->
         <div id="chat-screen" class="screen">
             <div class="orb"></div>
             <header class="chat-header">
@@ -65,18 +63,17 @@
                 <div class="status-indicator"></div>
             </header>
             <div class="messages-list" id="messages-list">
-                <!-- As mensagens serão inseridas aqui via JS -->
-            </div>
+                </div>
             <div class="typing-indicator hidden" id="typing-indicator">
                 <div class="spinner"></div>
                 <p class="typing-indicator-text">B.I.A está a pensar...</p>
             </div>
             <div class="chat-input-container">
-                 <div class="reply-context" id="reply-context">
+                <div class="reply-context" id="reply-context">
                     <span id="reply-context-text"></span>
                     <button class="reply-context-close" id="reply-context-close">&times;</button>
-                 </div>
-                 <form class="chat-input-form" id="chat-form">
+                </div>
+                <form class="chat-input-form" id="chat-form">
                     <input type="text" id="chat-input" placeholder="Digite a sua dúvida aqui..." autocomplete="off"/>
                     <button type="submit" id="send-btn" aria-label="Enviar">
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="#A8FF78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m12 16 4-4-4-4M8 12h8" stroke="#111" stroke-width="1.5"></path></svg>
@@ -84,7 +81,7 @@
                 </form>
             </div>
         </div>
-    </div>
-    <script src="/src/js/main.js"></script>
+        </div>
+    <script src="src/js/main.js"></script>
 </body>
 </html>
