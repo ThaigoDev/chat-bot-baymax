@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         pageNumber: 1,
     };
 
-    // --- Funções de UI (para controlar o que é exibido) ---
     const showLoading = () => {
         paginationFooter.classList.remove('visible');
         resultsContainer.innerHTML = `

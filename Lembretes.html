@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lembretes de Saúde - B.I.A</title>
+    <link rel="stylesheet" href="src/css/main.css">
+    <link rel="stylesheet" href="src/css/lembretes.css">
+</head>
+<body>
+    <div class="app-container">
+        <div id="reminders-screen" class="screen active">
+
+            <header class="chat-header">
+                <a href="index.html" class="back-button" aria-label="Voltar para Home">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A8FF78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </a>
+                <h2 class="chat-title">Meus Lembretes</h2>
+                <div style="width: 28px;"></div> </header>
+
+            <main class="reminders-content">
+                
+                <section class="add-reminder-form-section">
+                    <h3>Adicionar Novo Lembrete</h3>
+                    <form id="add-reminder-form" class="add-reminder-form">
+                        <input type="text" id="reminder-text" placeholder="Ex: Tomar Vitamina D" required>
+                        <input type="time" id="reminder-time" required>
+                        <button type="submit" aria-label="Adicionar Lembrete">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                    </form>
+                </section>
+
+                <section class="reminders-list-section">
+                    <div id="reminders-list" class="reminders-list">
+                        </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+    <script src="src/js/lembretes.js"></script>
+</body>
+</html>
