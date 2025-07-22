@@ -222,13 +222,23 @@ body.dark-mode .theme-toggle .sun { display: block; }
     background-color: var(--bg-secondary); 
     border-bottom: 1px solid var(--border-color); 
     z-index: 10; 
-    flex-shrink: 0; /* ADICIONADO PARA CORRIGIR O BUG */
+    flex-shrink: 0;
 }
 .chat-header button { background: none; border: none; cursor: pointer; padding: 5px; color: var(--accent-color); }
 .chat-header button svg { stroke: var(--accent-color); }
 .chat-title { font-size: 18px; font-weight: bold; margin: 0; }
 .status-indicator { width: 10px; height: 10px; border-radius: 5px; background-color: var(--accent-color); }
-.messages-list { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+
+.messages-list { 
+    flex: 1; 
+    padding: 20px; 
+    overflow-y: auto; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px;
+    min-height: 0; /* <<< ESTA É A CORREÇÃO DEFINITIVA */
+}
+
 .message-wrapper { display: flex; align-items: flex-end; gap: 8px; opacity: 0; transform: translateY(10px); animation: fadeIn 0.4s ease forwards; }
 .message-wrapper.user { justify-content: flex-end; }
 .message-wrapper.bot { justify-content: flex-start; }
@@ -248,7 +258,7 @@ body.dark-mode .theme-toggle .sun { display: block; }
     padding: 10px; 
     border-top: 1px solid var(--border-color); 
     z-index: 10; 
-    flex-shrink: 0; /* ADICIONADO PARA CORRIGIR O BUG */
+    flex-shrink: 0;
 }
 .reply-context { background-color: var(--bg-tertiary); padding: 8px 12px; margin-bottom: 8px; border-radius: 12px; border-left: 3px solid var(--accent-color); font-size: 12px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; display: none; }
 .reply-context.active { display: block; }
