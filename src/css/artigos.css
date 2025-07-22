@@ -27,12 +27,13 @@
 .articles-header h1 {
     margin: 0;
     font-size: 20px;
+    padding-left: 10px;
 }
 
 .back-button {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     text-decoration: none;
     color: var(--accent-color);
     font-weight: bold;
