@@ -100,12 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
         homeScreen.classList.add('active');
     });
 
-    // --- FUNÇÃO DE ADICIONAR MENSAGEM (MODIFICADA) ---
+    // --- FUNÇÃO DE ADICIONAR MENSAGEM (MODIFICADA PARA INCLUIR AVATAR) ---
     const addMessage = (text, sender, replyToText = null) => {
         const wrapper = document.createElement('div');
         wrapper.classList.add('message-wrapper', sender);
     
-        // Se a mensagem for do bot, adiciona o avatar
+        // Se a mensagem for do bot, adiciona o avatar ANTES da bolha de texto
         if (sender === 'bot') {
             const avatarDiv = document.createElement('div');
             avatarDiv.className = 'bot-avatar';
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messageBubble.appendChild(mainMessageText);
         wrapper.appendChild(messageBubble);
     
-        // Adiciona o botão de resposta para mensagens do bot
+        // Botão de resposta (opcional, pode ficar fora do wrapper principal se preferir)
         if (sender === 'bot') {
             const replyBtn = document.createElement('button');
             replyBtn.classList.add('reply-btn');
@@ -157,7 +157,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const toggleTypingIndicator = (show) => {
         typingIndicator.classList.toggle('hidden', !show);
-        if(show) messagesList.scrollTop = messagesList.scrollHeight;
+        if(show) {
+            messagesList.appendChild(typingIndicator); // Move o indicador para o final da lista
+            messagesList.scrollTop = messagesList.scrollHeight;
+        }
     }
 
     chatForm.addEventListener('submit', async (e) => {
