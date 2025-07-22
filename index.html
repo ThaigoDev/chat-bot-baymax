@@ -23,9 +23,13 @@
             <div class="home-content">
                 <header class="home-header">
                     <div class="avatar">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <img src="src/utilites/baymaxicon.jpg" alt="Avatar do Baymax">
                     </div>
                     <h1 class="greeting-text">Olá!</h1>
+                    <button id="theme-toggle-btn" class="theme-toggle" aria-label="Mudar tema">
+                        <svg class="sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
                 </header>
                 <main>
                     <div class="home-title-container">
@@ -33,19 +37,19 @@
                     </div>
                     <section class="action-grid">
                         <button class="main-action-card" id="start-chat-btn">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8v4H4v8h16V8h-8z"></path><path d="M16 8h4v8h-4V8z"></path><path d="M12 16h0"></path><path d="M9 13h6"></path><path d="M12 4a2 2 0 0 1 2 2v2H10V6a2 2 0 0 1 2-2z"></path></svg>
-                            <p class="main-action-text">Conversar com o Bot</p>
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.19 8.81l-6.38-6.38a2.53 2.53 0 0 0-3.58 0L3.21 10.4a2.53 2.53 0 0 0 0 3.58l6.38 6.38a2.53 2.53 0 0 0 3.58 0l8.02-8.02a2.53 2.53 0 0 0 0-3.58z"></path><path d="M12 22v-6"></path><path d="M7 17l-5-5"></path><path d="m11 7-5 5"></path></svg>
+                            <p class="main-action-text">Conversar com o Baymax</p>
                             <div class="arrow-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                             </div>
                         </button>
                         <div class="secondary-action-row">
-                            <a href="Lembretes.html" class="secondary-action-card" style="background-color: #DA78FF; text-decoration: none; transition: transform 0.2s; opacity: 0.7; cursor: not-allowed;">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path><path d="m8.5 8.5 7 7"></path></svg>
+                            <a href="#" class="secondary-action-card" style="opacity: 0.7; cursor: not-allowed;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path><path d="m8.5 8.5 7 7"></path></svg>
                                 <p class="secondary-action-text">Lembretes</p>
                             </a>
-                            <a href="artigos.html" class="secondary-action-card" style="background-color: #4E4E4E; text-decoration: none; transition: transform 0.2s;">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                            <a href="#" class="secondary-action-card">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                                 <p class="secondary-action-text">Artigos</p>
                             </a>
                         </div>
@@ -53,11 +57,11 @@
                     <section class="history-section">
                         <h3 class="history-title">Histórico</h3>
                         <div class="history-item">
-                            <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
+                            <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
                             <p>O que é dengue?</p>
                         </div>
                         <div class="history-item">
-                            <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
+                            <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
                             <p>Sintomas de gripe</p>
                         </div>
                     </section>
@@ -65,10 +69,9 @@
             </div>
         </div>
         <div id="chat-screen" class="screen">
-            <div class="orb"></div>
             <header class="chat-header">
                 <button id="back-to-home-btn" aria-label="Voltar">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A8FF78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
                 </button>
                 <h2 class="chat-title">Assistente de Saúde</h2>
                 <div class="status-indicator"></div>
@@ -87,7 +90,7 @@
                 <form class="chat-input-form" id="chat-form">
                     <input type="text" id="chat-input" placeholder="Digite a sua dúvida aqui..." autocomplete="off"/>
                     <button type="submit" id="send-btn" aria-label="Enviar">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="#A8FF78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m12 16 4-4-4-4M8 12h8" stroke="#111" stroke-width="1.5"></path></svg>
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m12 16 4-4-4-4M8 12h8" stroke="var(--bg-main)" stroke-width="1.5"></path></svg>
                     </button>
                 </form>
             </div>

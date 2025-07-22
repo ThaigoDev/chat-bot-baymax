@@ -1,4 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- LÓGICA DE SELETOR DE TEMA ---
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    const body = document.body;
+
+    // Função para aplicar o tema salvo
+    const applySavedTheme = () => {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            body.classList.add('dark-mode');
+        } else {
+            body.classList.remove('dark-mode');
+        }
+    };
+
+    // Evento de clique para alternar o tema
+    themeToggleBtn.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        // Salva a preferência no localStorage
+        if (body.classList.contains('dark-mode')) {
+            localStorage.setItem('theme', 'dark');
+        } else {
+            localStorage.setItem('theme', 'light');
+        }
+    });
+
+    // Aplica o tema ao carregar a página
+    applySavedTheme();
+
     // --- LÓGICA DA INTRODUÇÃO COM ANIMAÇÕES ---
     const interactionScreen = document.getElementById('interaction-screen');
     const startBtn = document.getElementById('start-experience-btn');
@@ -6,55 +34,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const introVideo = document.getElementById('intro-video');
     const appContainer = document.querySelector('.app-container');
 
-    // 1. Quando o usuário clica em "Entrar"
     startBtn.addEventListener('click', () => {
-        // Esconde a tela de interação com animação
         interactionScreen.classList.add('hidden');
-        
-        // Prepara a tela do vídeo para aparecer
         videoSplashScreen.style.display = 'block';
-        
-        // Atraso mínimo para garantir que o 'display: block' seja processado antes de animar a opacidade
         setTimeout(() => {
             videoSplashScreen.style.opacity = '1';
         }, 50);
 
-        // Toca o vídeo COM SOM (agora é permitido pelo navegador)
         introVideo.play().catch(error => {
             console.error("Erro ao tentar tocar o vídeo:", error);
-            showApp(); // Se falhar, pula direto para o app
+            showApp();
         });
 
-        // Remove a tela de interação da DOM após a animação de saída
         setTimeout(() => {
             if (interactionScreen) interactionScreen.remove();
-        }, 1000); 
+        }, 1000);
     });
 
-    // 2. Quando o vídeo termina
-    introVideo.addEventListener('ended', () => {
-        showApp();
-    });
+    introVideo.addEventListener('ended', showApp);
 
-    // 3. Função para mostrar o app principal com animação
     function showApp() {
-        // Garante que a função não execute duas vezes
         if (appContainer.classList.contains('visible')) return;
-        
-        // Inicia a animação de saída do vídeo (fade-out)
         videoSplashScreen.style.opacity = '0';
-        
-        // Inicia a animação de entrada do app (fade-in e scale-up)
         appContainer.classList.add('visible');
-
-        // Remove a tela do vídeo da DOM após sua animação de saída
         setTimeout(() => {
             if (videoSplashScreen) videoSplashScreen.remove();
-        }, 1200); // Duração da transição do vídeo
+        }, 1200);
     }
     
-    // --- SEU CÓDIGO ORIGINAL DO CHATBOT CONTINUA ABAIXO ---
-
+    // --- CÓDIGO ORIGINAL DO CHATBOT ---
     const homeScreen = document.getElementById('home-screen');
     const chatScreen = document.getElementById('chat-screen');
     const startChatBtn = document.getElementById('start-chat-btn');
