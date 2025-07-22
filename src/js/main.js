@@ -1,9 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- LÓGICA DE SELETOR DE TEMA ---
+    // --- LÓGICA DE SELETOR DE TEMA (MANTIDA) ---
     const themeToggleBtn = document.getElementById('theme-toggle-btn');
     const body = document.body;
 
-    // Função para aplicar o tema salvo
     const applySavedTheme = () => {
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark') {
@@ -13,56 +12,76 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Evento de clique para alternar o tema
-    themeToggleBtn.addEventListener('click', () => {
-        body.classList.toggle('dark-mode');
-        // Salva a preferência no localStorage
-        if (body.classList.contains('dark-mode')) {
-            localStorage.setItem('theme', 'dark');
-        } else {
-            localStorage.setItem('theme', 'light');
-        }
-    });
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    }
 
-    // Aplica o tema ao carregar a página
     applySavedTheme();
 
-    // --- LÓGICA DA INTRODUÇÃO COM ANIMAÇÕES ---
+    // --- LÓGICA DA INTRODUÇÃO COM ANIMAÇÕES (MODIFICADA) ---
     const interactionScreen = document.getElementById('interaction-screen');
-    const startBtn = document.getElementById('start-experience-btn');
     const videoSplashScreen = document.getElementById('video-splash-screen');
-    const introVideo = document.getElementById('intro-video');
     const appContainer = document.querySelector('.app-container');
 
-    startBtn.addEventListener('click', () => {
-        interactionScreen.classList.add('hidden');
-        videoSplashScreen.style.display = 'block';
-        setTimeout(() => {
-            videoSplashScreen.style.opacity = '1';
-        }, 50);
-
-        introVideo.play().catch(error => {
-            console.error("Erro ao tentar tocar o vídeo:", error);
-            showApp();
-        });
-
-        setTimeout(() => {
-            if (interactionScreen) interactionScreen.remove();
-        }, 1000);
-    });
-
-    introVideo.addEventListener('ended', showApp);
-
+    // Função reutilizável para mostrar o app principal
     function showApp() {
         if (appContainer.classList.contains('visible')) return;
-        videoSplashScreen.style.opacity = '0';
+        
+        // Garante que o vídeo suma suavemente se ele existir
+        if (videoSplashScreen) {
+            videoSplashScreen.style.opacity = '0';
+            setTimeout(() => {
+                if (videoSplashScreen) videoSplashScreen.remove();
+            }, 1200);
+        }
+        
         appContainer.classList.add('visible');
-        setTimeout(() => {
-            if (videoSplashScreen) videoSplashScreen.remove();
-        }, 1200);
+    }
+
+    // VERIFICA SE O VÍDEO JÁ FOI VISTO NESTA SESSÃO
+    if (sessionStorage.getItem('introShown') === 'true') {
+        // Se já viu, remove as telas de introdução e mostra o app diretamente
+        if (interactionScreen) interactionScreen.remove();
+        if (videoSplashScreen) videoSplashScreen.remove();
+        appContainer.classList.add('visible');
+    } else {
+        // Se é a primeira vez na sessão, executa a lógica da introdução
+        const startBtn = document.getElementById('start-experience-btn');
+        const introVideo = document.getElementById('intro-video');
+
+        startBtn.addEventListener('click', () => {
+            // Marca que a introdução foi vista para não repetir na mesma sessão
+            sessionStorage.setItem('introShown', 'true');
+
+            interactionScreen.classList.add('hidden');
+            videoSplashScreen.style.display = 'block';
+            
+            setTimeout(() => {
+                videoSplashScreen.style.opacity = '1';
+            }, 50);
+
+            introVideo.play().catch(error => {
+                console.error("Erro ao tentar tocar o vídeo:", error);
+                showApp(); 
+            });
+
+            setTimeout(() => {
+                if (interactionScreen) interactionScreen.remove();
+            }, 1000); 
+        });
+
+        // Quando o vídeo terminar, mostra o app
+        introVideo.addEventListener('ended', showApp);
     }
     
-    // --- CÓDIGO ORIGINAL DO CHATBOT ---
+    // --- CÓDIGO DO CHATBOT (MANTIDO) ---
     const homeScreen = document.getElementById('home-screen');
     const chatScreen = document.getElementById('chat-screen');
     const startChatBtn = document.getElementById('start-chat-btn');
