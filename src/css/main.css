@@ -184,6 +184,7 @@ body.dark-mode .theme-toggle .sun { display: block; }
     grid-template-rows: auto 1fr auto;
     height: 100%;
     overflow: hidden; /* Garante que nada saia da tela */
+    max-height: 100%;
 }
 
 .chat-header { 
@@ -212,9 +213,9 @@ body.dark-mode .theme-toggle .sun { display: block; }
     background-color: var(--bg-secondary); 
     border-top: 1px solid var(--border-color); 
     z-index: 10; 
-    padding: 10px 15px;
+    padding: 15px 20px;
     /* CORREÇÃO PARA A BARRA NATIVA DO CELULAR (SAFE AREA) */
-    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    padding-bottom: calc(25px + env(safe-area-inset-bottom));
 }
 
 /* --- ESTILOS DAS MENSAGENS COM AVATAR --- */
