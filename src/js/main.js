@@ -219,3 +219,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     addMessage('Olá! Eu sou o Baymax. Para começar, faça uma pergunta ou descreva seus sintomas.', 'bot');
 });
+
+const setAppHeight = () => {
+            const doc = document.documentElement;
+            doc.style.setProperty('--app-height', `${window.innerHeight}px`);
+        };
+
+        window.addEventListener('resize', setAppHeight);
+        setAppHeight(); // Define a altura na primeira carga
