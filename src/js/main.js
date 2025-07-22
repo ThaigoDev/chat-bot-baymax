@@ -25,16 +25,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     applySavedTheme();
 
-    // --- LÓGICA DA INTRODUÇÃO COM ANIMAÇÕES (MODIFICADA) ---
+    // --- LÓGICA DA INTRODUÇÃO COM ANIMAÇÕES (MANTIDA) ---
     const interactionScreen = document.getElementById('interaction-screen');
     const videoSplashScreen = document.getElementById('video-splash-screen');
     const appContainer = document.querySelector('.app-container');
 
-    // Função reutilizável para mostrar o app principal
     function showApp() {
         if (appContainer.classList.contains('visible')) return;
         
-        // Garante que o vídeo suma suavemente se ele existir
         if (videoSplashScreen) {
             videoSplashScreen.style.opacity = '0';
             setTimeout(() => {
@@ -45,21 +43,16 @@ document.addEventListener('DOMContentLoaded', () => {
         appContainer.classList.add('visible');
     }
 
-    // VERIFICA SE O VÍDEO JÁ FOI VISTO NESTA SESSÃO
     if (sessionStorage.getItem('introShown') === 'true') {
-        // Se já viu, remove as telas de introdução e mostra o app diretamente
         if (interactionScreen) interactionScreen.remove();
         if (videoSplashScreen) videoSplashScreen.remove();
         appContainer.classList.add('visible');
     } else {
-        // Se é a primeira vez na sessão, executa a lógica da introdução
         const startBtn = document.getElementById('start-experience-btn');
         const introVideo = document.getElementById('intro-video');
 
         startBtn.addEventListener('click', () => {
-            // Marca que a introdução foi vista para não repetir na mesma sessão
             sessionStorage.setItem('introShown', 'true');
-
             interactionScreen.classList.add('hidden');
             videoSplashScreen.style.display = 'block';
             
@@ -77,11 +70,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 1000); 
         });
 
-        // Quando o vídeo terminar, mostra o app
         introVideo.addEventListener('ended', showApp);
     }
     
-    // --- CÓDIGO DO CHATBOT (MANTIDO) ---
+    // --- CÓDIGO DO CHATBOT ---
     const homeScreen = document.getElementById('home-screen');
     const chatScreen = document.getElementById('chat-screen');
     const startChatBtn = document.getElementById('start-chat-btn');
@@ -108,30 +100,43 @@ document.addEventListener('DOMContentLoaded', () => {
         homeScreen.classList.add('active');
     });
 
+    // --- FUNÇÃO DE ADICIONAR MENSAGEM (MODIFICADA) ---
     const addMessage = (text, sender, replyToText = null) => {
         const wrapper = document.createElement('div');
         wrapper.classList.add('message-wrapper', sender);
+    
+        // Se a mensagem for do bot, adiciona o avatar
+        if (sender === 'bot') {
+            const avatarDiv = document.createElement('div');
+            avatarDiv.className = 'bot-avatar';
+            avatarDiv.innerHTML = `<img src="src/utilites/baymaxicon.jpg" alt="Avatar do Baymax">`;
+            wrapper.appendChild(avatarDiv);
+        }
+    
         const messageBubble = document.createElement('div');
         messageBubble.classList.add('message-bubble', sender);
+    
         if (sender === 'user' && replyToText) {
             const replyQuote = document.createElement('div');
             replyQuote.classList.add('reply-quote');
             replyQuote.textContent = replyToText;
             messageBubble.appendChild(replyQuote);
         }
+    
         const mainMessageText = document.createTextNode(text);
         messageBubble.appendChild(mainMessageText);
+        wrapper.appendChild(messageBubble);
+    
+        // Adiciona o botão de resposta para mensagens do bot
         if (sender === 'bot') {
             const replyBtn = document.createElement('button');
             replyBtn.classList.add('reply-btn');
             replyBtn.setAttribute('aria-label', 'Responder');
             replyBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"></polyline><path d="M20 18v-2a4 4 0 0 0-4-4H4"></path></svg>`;
             replyBtn.onclick = () => setReplyContext(text);
-            wrapper.appendChild(messageBubble);
             wrapper.appendChild(replyBtn);
-        } else {
-            wrapper.appendChild(messageBubble);
         }
+    
         messagesList.appendChild(wrapper);
         messagesList.scrollTop = messagesList.scrollHeight;
     };

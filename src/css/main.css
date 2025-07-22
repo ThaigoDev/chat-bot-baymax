@@ -171,7 +171,7 @@ body.dark-mode .theme-toggle .moon { display: none; }
 body.dark-mode .theme-toggle .sun { display: block; }
 
 /************************************************************/
-/* --- ESTILOS DO CHAT (SOLUÇÃO FINAL COM SAFE AREA) --- */
+/* --- ESTILOS DO CHAT (SOLUÇÃO FINAL E COMPLETA) --- */
 /************************************************************/
 
 #chat-screen {
@@ -202,8 +202,7 @@ body.dark-mode .theme-toggle .sun { display: block; }
 .messages-list { 
     height: 100%;
     overflow-y: auto;
-    /* Adiciona espaçamento para o cabeçalho e a barra de input */
-    padding: 70px 20px 95px 20px;
+    padding: 75px 15px 100px 15px;
     box-sizing: border-box;
     display: flex; 
     flex-direction: column; 
@@ -218,26 +217,75 @@ body.dark-mode .theme-toggle .sun { display: block; }
     background-color: var(--bg-secondary); 
     border-top: 1px solid var(--border-color); 
     z-index: 10; 
-
-    /* A MÁGICA ACONTECE AQUI: */
-    /* Padding normal para todos os lados */
-    padding: 10px 20px;
-    /* Adiciona um padding extra na parte de baixo, que será a altura da barra de sistema do celular */
+    padding: 10px 15px;
+    /* CORREÇÃO: Adiciona um espaçamento na parte de baixo para a barra do celular (Safe Area) */
     padding-bottom: calc(10px + env(safe-area-inset-bottom));
 }
 
-/* O resto dos estilos não precisa de grandes mudanças */
-.message-wrapper { display: flex; align-items: flex-end; gap: 8px; opacity: 0; transform: translateY(10px); animation: fadeIn 0.4s ease forwards; }
-.message-wrapper.user { justify-content: flex-end; }
-.message-wrapper.bot { justify-content: flex-start; }
+/* --- ESTILOS DAS MENSAGENS COM AVATAR --- */
+
+.message-wrapper { 
+    display: flex; 
+    align-items: flex-end; 
+    gap: 8px; 
+    opacity: 0; 
+    transform: translateY(10px); 
+    animation: fadeIn 0.4s ease forwards; 
+    max-width: 90%;
+}
+
+.message-wrapper.user { 
+    justify-content: flex-end;
+    margin-left: auto; /* Alinha o wrapper à direita */
+}
+
+.message-wrapper.bot { 
+    justify-content: flex-start; 
+    margin-right: auto; /* Alinha o wrapper à esquerda */
+}
+
+/* NOVO: Estilo para o avatar do bot na mensagem */
+.bot-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0; /* Impede que o avatar encolha */
+}
+
+.bot-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
-.message-bubble { max-width: 80%; padding: 12px 18px; border-radius: 20px; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
-.message-bubble.user { background-color: var(--accent-color); color: var(--text-accent); border-bottom-right-radius: 5px; }
-.message-bubble.bot { background-color: var(--bg-secondary); color: var(--text-primary); border-bottom-left-radius: 5px; }
+
+.message-bubble { 
+    max-width: 100%; /* O wrapper já limita a largura */
+    padding: 12px 18px; 
+    border-radius: 20px; 
+    line-height: 1.5; 
+    white-space: pre-wrap; 
+    word-wrap: break-word; 
+}
+
+.message-bubble.user { 
+    background-color: var(--accent-color); 
+    color: var(--text-accent); 
+    border-bottom-right-radius: 5px; 
+}
+
+.message-bubble.bot { 
+    background-color: var(--bg-secondary); 
+    color: var(--text-primary); 
+    border-bottom-left-radius: 5px; 
+}
+
 .reply-btn { background: none; border: none; cursor: pointer; padding: 4px; opacity: 0; color: var(--text-secondary); transition: opacity 0.2s; }
 .message-wrapper:hover .reply-btn { opacity: 0.7; }
 .reply-btn:hover { opacity: 1; }
-.typing-indicator { position: absolute; bottom: 90px; /* Ajustado para ficar acima da barra */ bottom: calc(80px + env(safe-area-inset-bottom)); left: 20px; display: flex; align-items: center; padding: 10px 0; opacity: 0; transform: translateY(10px); animation: fadeIn 0.4s ease forwards; z-index: 5; }
+.typing-indicator { position: absolute; bottom: 90px; bottom: calc(80px + env(safe-area-inset-bottom)); left: 20px; display: flex; align-items: center; padding: 10px 0; opacity: 0; transform: translateY(10px); animation: fadeIn 0.4s ease forwards; z-index: 5; }
 .typing-indicator.hidden { display: none; }
 .typing-indicator-text { margin-left: 10px; color: var(--accent-color); font-size: 14px; }
 .reply-context { background-color: var(--bg-tertiary); padding: 8px 12px; margin-bottom: 8px; border-radius: 12px; border-left: 3px solid var(--accent-color); font-size: 12px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; display: none; }
