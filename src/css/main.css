@@ -271,8 +271,8 @@ body.dark-mode .theme-toggle .sun { display: block; }
 /* --- Responsividade --- */
 @media (min-width: 768px) {
     .app-container {
-        max-width: 900px;
-        max-height: 80vh;
+        max-width: 1000px;
+        max-height: 90vh;
         border-radius: 24px;
     }
     .home-content { padding: 40px; }
@@ -439,32 +439,4 @@ body.dark-mode .theme-toggle .sun { display: block; }
 
 .auth-form.hidden {
     display: none;
-}
-
-/* Garante que a área do input ocupe a largura toda e fique visível */
-.chat-input-area {
-  position: fixed; /* Fixa o elemento na tela */
-  bottom: 0;       /* Alinha na parte inferior */
-  left: 0;
-  width: 100%;
-  padding: 10px;
-  background-color: white; /* Adiciona um fundo para não ser transparente */
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Sombra para dar destaque */
-  box-sizing: border-box; /* Garante que o padding não aumente a largura total */
-}
-
-/* Garante que o formulário dentro da área seja visível */
-.chat-input-form {
-  width: 100%;
-  display: flex;
-}
-
-/* Faz o campo de texto ocupar o espaço disponível */
-.chat-input-form input {
-  flex-grow: 1; /* Permite que o input cresça e ocupe o espaço */
-}
-
-/* Adiciona um espaço no final da lista de mensagens para que a última mensagem não fique escondida atrás da barra de input */
-.chat-messages {
-  padding-bottom: 80px; /* Ajuste este valor se necessário */
 }
