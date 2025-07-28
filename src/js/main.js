@@ -1,4 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- CORREÇÃO: FUNÇÃO PARA AJUSTAR A ALTURA EM TELEMÓVEIS ---
+    const setAppHeight = () => {
+        const doc = document.documentElement;
+        // Cria uma variável CSS (--app-height) com a altura real da janela
+        doc.style.setProperty('--app-height', `${window.innerHeight}px`);
+    }
+    // Adiciona um listener para ajustar a altura se a janela for redimensionada
+    window.addEventListener('resize', setAppHeight);
+    // Executa a função uma vez quando a página carrega
+    setAppHeight();
+    // ----------------------------------------------------------------
+
     // --- CONFIGURAÇÃO DO FIREBASE ---
     const firebaseConfig = {
         apiKey: "AIzaSyCGWVbfV0u0MVpbmqQBOSfaI6DGbx3zK6g",
@@ -285,7 +297,6 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleTypingIndicator(true);
         clearReplyContext();
 
-        // **A LÓGICA ORIGINAL DA API ESTÁ AQUI, RESTAURADA E FUNCIONAL**
         const botResponse = await getBotResponse(conversationHistory, userMessage, contextMessage);
         conversationHistory.push({ role: 'user', parts: [{ text: userMessage }] });
         conversationHistory.push({ role: 'model', parts: [{ text: botResponse }] });

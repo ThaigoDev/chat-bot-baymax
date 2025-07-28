@@ -67,16 +67,21 @@ body {
 }
 
 .app-container {
+    visibility: hidden;
+    opacity: 0;
     width: 100%;
-    height: 100%; /* Ocupa 100% da altura do body */
+    max-width: 420px;
+    height: 100%;
+    height: var(--app-height);
+    max-height: 896px;
     background: var(--bg-main);
-    overflow: hidden; /* Mantém o conteúdo dentro das bordas */
-    display: flex; /* Usamos flex para gerenciar as telas */
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
     flex-direction: column;
     position: relative;
-    transition: background-color 0.3s ease;
-    visibility: hidden; /* Escondido até o JS mostrar */
-    opacity: 0;
+    box-shadow: 0 10px 40px var(--shadow-color);
+    transition: opacity 0.5s ease-in, background-color 0.3s ease;
 }
 
 .app-container.visible {
