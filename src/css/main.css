@@ -271,9 +271,8 @@ body.dark-mode .theme-toggle .sun { display: block; }
 /* --- Responsividade --- */
 @media (min-width: 768px) {
     .app-container {
-        max-width: 1000px;
-        max-height: 90vh;
-        border-radius: 24px;
+        max-width: 100%;
+        max-height: 100%;
     }
     .home-content { padding: 40px; }
     .home-title { font-size: 52px; }
