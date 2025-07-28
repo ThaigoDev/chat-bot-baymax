@@ -1,45 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
 
 /* --- ESTILOS PARA INTRODUÇÃO E VÍDEO --- */
-#interaction-screen {
-    position: fixed;
-    inset: 0;
-    background-color: #000;
-    z-index: 10001;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 1;
-    transition: opacity 0.5s ease;
-}
-
-#start-experience-btn {
-    font-family: 'Inter', sans-serif;
-    font-size: 18px;
-    font-weight: bold;
-    color: var(--text-accent);
-    background-color: var(--accent-color);
-    border: none;
-    padding: 15px 40px;
-    border-radius: 30px;
-    cursor: pointer;
-    transform: scale(1);
-    transition: transform 0.2s ease;
-}
-
-#start-experience-btn:hover {
-    transform: scale(1.05);
-}
+/* Remova os blocos #interaction-screen e #start-experience-btn daqui */
 
 #video-splash-screen {
     position: fixed;
     inset: 0;
     background-color: #000;
     z-index: 10000;
-    opacity: 1;
+    opacity: 0; /* Inicia invisível */
     transition: opacity 0.8s ease-out;
     display: none;
 }
+/* O resto do CSS permanece o mesmo... */
 
 #intro-video {
     width: 100%;
@@ -307,4 +280,162 @@ body.dark-mode .theme-toggle .sun { display: block; }
     .main-action-card { flex: 2; margin-bottom: 0; }
     .secondary-action-row { flex: 1; flex-direction: column; }
     .messages-list, .chat-input-container { padding-left: 30px; padding-right: 30px; }
+}
+/* --- ESTILOS PARA TELA DE AUTENTICAÇÃO --- */
+#auth-container {
+    position: fixed;
+    inset: 0;
+    background-color: var(--bg-main);
+    z-index: 10002;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    transition: opacity 0.3s ease;
+}
+
+#auth-container.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.auth-box {
+    width: 100%;
+    max-width: 380px;
+    padding: 30px;
+    background-color: var(--bg-secondary);
+    border-radius: 20px;
+}
+
+.auth-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+}
+
+.auth-box h2 {
+    font-size: 24px;
+    font-weight: 900;
+    margin-bottom: 5px;
+    color: var(--text-primary);
+}
+
+.auth-box p {
+    color: var(--text-secondary);
+    margin-bottom: 25px;
+}
+
+.auth-form .input-group {
+    margin-bottom: 15px;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    box-sizing: border-box; /* Garante que padding não afete a largura */
+}
+.auth-form input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.auth-button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background-color: var(--accent-color);
+    color: var(--text-accent);
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.auth-button.register {
+    background-color: #4CAF50; /* Um verde para diferenciar */
+}
+.auth-button:hover {
+    opacity: 0.9;
+}
+
+.auth-error-message {
+    color: #D32F2F;
+    font-size: 14px;
+    margin-top: 15px;
+    min-height: 20px; /* Evita que o layout pule */
+}
+
+.separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin: 20px 0;
+}
+.separator::before, .separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border-color);
+}
+.separator:not(:empty)::before { margin-right: .25em; }
+.separator:not(:empty)::after { margin-left: .25em; }
+
+
+#google-signin-btn {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background-color: #4285F4;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 20px;
+}
+#google-signin-btn:hover { background-color: #357ae8; }
+#google-signin-btn .fab { font-size: 20px; }
+
+.toggle-auth {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+.toggle-auth a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.logout-button {
+    margin-left: auto;
+    background: var(--bg-secondary);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-primary);
+    margin-right: 10px;
+}
+.logout-button svg { stroke: var(--text-primary); }
+
+.auth-form.hidden {
+    display: none;
 }
