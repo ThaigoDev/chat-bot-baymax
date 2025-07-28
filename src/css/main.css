@@ -261,7 +261,7 @@ body.dark-mode .theme-toggle .sun { display: block; }
 .reply-context.active { display: block; }
 .reply-context-close { position: absolute; top: 50%; right: 10px; transform: translateY(-50%); background: none; border: none; color: var(--text-primary); cursor: pointer; font-size: 16px; }
 .chat-input-form { display: flex; align-items: center; }
-.chat-input-form input { flex: 1; background-color: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 20px; padding: 10px 15px; color: var(--text-primary); font-size: 16px; margin-right: 10px; font-family: 'Inter', sans-serif; }
+.chat-input-form input { display: flex; background-color: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 20px; padding: 10px 15px; color: var(--text-primary); font-size: 16px; margin-right: 10px; font-family: 'Inter', sans-serif; }
 .chat-input-form input:focus { outline: none; border-color: var(--accent-color); }
 .chat-input-form button { background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--accent-color); }
 .chat-input-form button svg path { stroke: var(--bg-main); }
