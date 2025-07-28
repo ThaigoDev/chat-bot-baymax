@@ -3,47 +3,105 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lembretes de Saúde - Baymax</title>
-    <link rel="stylesheet" href="src/css/main.css"> 
+    <title>Consulta Rápida - Baymax</title>
+    <link rel="stylesheet" href="src/css/main.css">
     <link rel="stylesheet" href="src/css/lembretes.css">
 </head>
 <body>
     <div class="app-container visible">
-        <div id="reminders-screen" class="screen active">
+        <div id="consultation-screen" class="screen active">
 
             <header class="chat-header">
                 <a href="index.html" class="back-button" aria-label="Voltar para Home">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
                 </a>
-                <h2 class="chat-title">Meus Lembretes</h2>
+                <h2 class="chat-title">Consulta Rápida</h2>
                 <button id="theme-toggle-btn" class="theme-toggle" aria-label="Mudar tema">
                     <svg class="sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
                     <svg class="moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                 </button>
             </header>
 
-            <main class="reminders-content">
-                
-                <section class="add-reminder-form-section">
-                    <h3>Adicionar Novo Lembrete</h3>
-                    <form id="add-reminder-form" class="add-reminder-form">
-                        <input type="text" id="reminder-text" placeholder="Ex: Tomar Vitamina D" required>
-                        <input type="time" id="reminder-time" required>
-                        <button type="submit" aria-label="Adicionar Lembrete">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                        </button>
-                    </form>
-                </section>
+            <main class="consultation-content">
+                <form id="consultation-form">
+                    <div class="form-group">
+                        <label for="idade">Idade</label>
+                        <input type="number" id="idade" name="idade" placeholder="Ex: 30" required>
+                    </div>
 
-                <section class="reminders-list-section">
-                    <h3>Próximos Lembretes</h3>
-                    <div id="reminders-list" class="reminders-list">
-                        </div>
-                </section>
+                    <div class="form-group">
+                        <label for="sexo">Sexo</label>
+                        <select id="sexo" name="sexo" required>
+                            <option value="" disabled selected>Selecione...</option>
+                            <option value="masculino">Masculino</option>
+                            <option value="feminino">Feminino</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </div>
 
+                    <div class="form-group">
+                        <label for="comorbidades">Tem comorbidades (doenças crônicas)? Se sim, quais?</label>
+                        <textarea id="comorbidades" name="comorbidades" rows="3" placeholder="Ex: Diabetes tipo 2, Hipertensão"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="medicamentos">Toma algum medicamento de uso contínuo? Se sim, quais?</label>
+                        <textarea id="medicamentos" name="medicamentos" rows="3" placeholder="Ex: Metformina 500mg, Losartana 50mg"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cirurgias">Já fez alguma cirurgia? Se sim, qual?</label>
+                        <textarea id="cirurgias" name="cirurgias" rows="2" placeholder="Ex: Apendicectomia em 2015"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="drogas">Faz uso de alguma droga lícita ou ilícita (álcool, tabaco, etc.)?</label>
+                        <textarea id="drogas" name="drogas" rows="2" placeholder="Ex: Consumo álcool socialmente, não fumo"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="familiares">Algum familiar de primeiro grau tem doença crônica?</label>
+                        <textarea id="familiares" name="familiares" rows="3" placeholder="Ex: Mãe com hipertensão, Pai com colesterol alto"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sintomas">Quais sintomas você está sentindo?</label>
+                        <textarea id="sintomas" name="sintomas" rows="4" placeholder="Descreva seus sintomas gerais aqui..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="frequencia">Com qual frequência sente esses sintomas?</label>
+                        <input type="text" id="frequencia" name="frequencia" placeholder="Ex: Diariamente, 3 vezes por semana" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="intensidade">Qual a intensidade desses sintomas?</label>
+                        <select id="intensidade" name="intensidade" required>
+                            <option value="" disabled selected>Selecione a intensidade...</option>
+                            <option value="leve">Leve</option>
+                            <option value="moderada">Moderada</option>
+                            <option value="intensa">Intensa</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="melhora-piora">Fez algo que melhorou ou piorou os sintomas?</label>
+                        <textarea id="melhora-piora" name="melhora-piora" rows="3" placeholder="Ex: Piora ao deitar, melhora com bolsa de água quente"></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Analisar e Obter Resultado</button>
+                </form>
+
+                <div id="ai-result" class="ai-result-container hidden">
+                    <h3>Resultado da Análise</h3>
+                    <div class="spinner-container">
+                        <div class="spinner"></div>
+                        <p>Baymax está analisando suas respostas...</p>
+                    </div>
+                    <div id="result-content" class="result-text"></div>
+                </div>
             </main>
         </div>
     </div>
-    <script src="src/js/lembretes.js"></script>
-</body>
+    </body>
 </html>

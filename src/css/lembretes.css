@@ -1,174 +1,175 @@
-/* SUBSTITUA TODO O CONTEÚDO DE src/css/lembretes.css */
+/*
+ * Estilos para a tela de Consulta Rápida
+ * v2.0 - Ajustes finos baseados nas imagens de referência.
+ */
 
 /* --- Layout Principal --- */
-#reminders-screen {
-    background-color: var(--background-dark);
+#consultation-screen {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 100vh; /* Ocupa a altura toda da tela */
+    background-color: var(--bg-primary);
 }
 
-.reminders-content {
+.consultation-content {
     flex-grow: 1;
-    overflow-y: auto; /* Scroll apenas vertical, no conteúdo */
-    padding: 20px;
+    overflow-y: auto;
+    padding: 16px 24px 32px 24px; /* Ajuste de padding para mais respiro */
+    -webkit-overflow-scrolling: touch; /* Melhora a rolagem em dispositivos móveis */
+}
+
+/* --- Ajustes no Header (herdado do main.css, mas garantindo consistência) --- */
+.chat-header {
+    display: flex;
+    flex-direction: row;
+    padding: 12px 16px;
+    justify-items: center;
+    align-items: center;
 }
 
 .back-button {
-    text-decoration: none;
-    line-height: 0;
+    color: var(--text-secondary);
 }
 
-/* --- Formulário de Adicionar --- */
-.add-reminder-form-section h3 {
-    font-size: 18px;
-    margin: 0 0 15px 0;
-}
-
-.add-reminder-form {
-    display: flex;
-    flex-wrap: wrap; /* Permite que os itens quebrem a linha se não couberem */
-    gap: 10px;
-    margin-bottom: 30px;
-}
-
-.add-reminder-form input[type="text"] {
-    flex-grow: 1; /* Ocupa o espaço que sobrar */
-    flex-basis: 200px; /* Tamanho base antes de crescer/encolher */
-    min-width: 150px; /* Largura mínima */
-    background-color: var(--gray-1);
-    border: 1px solid var(--gray-2);
-    border-radius: 12px;
-    padding: 12px 15px;
-    color: var(--text-light);
-    font-size: 16px;
-    font-family: 'Inter', sans-serif;
-}
-
-.add-reminder-form input[type="time"] {
-    background-color: var(--gray-1);
-    border: 1px solid var(--gray-2);
-    border-radius: 12px;
-    padding: 10px;
-    color: var(--text-light);
-    font-family: 'Inter', sans-serif;
-    font-size: 16px;
-    color-scheme: dark;
-}
-
-.add-reminder-form input:focus {
-    outline: none;
-    border-color: var(--primary-green);
-}
-
-.add-reminder-form button {
-    flex-shrink: 0;
-    width: 50px;
-    height: 50px;
-    background-color: var(--primary-green);
-    color: var(--text-dark);
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.2s;
-}
-.add-reminder-form button:hover {
-    transform: scale(1.05);
-}
-
-/* --- Lista de Lembretes --- */
-.reminders-list {
-    display: grid;
-    gap: 15px;
-    /* As colunas serão definidas nas media queries abaixo */
-    grid-template-columns: 1fr; /* Padrão de 1 coluna para mobile */
-}
-
-.reminder-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--gray-1);
-    padding: 20px;
-    border-radius: 15px;
-    border-left: 5px solid var(--secondary-purple);
-    animation: fadeIn 0.4s ease forwards;
-    opacity: 0;
-}
-
-.reminder-info {
+/* --- Estilos do Formulário --- */
+#consultation-form {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    /* Impede que o texto quebre o layout */
-    overflow: hidden; 
+    gap: 24px; /* Aumenta o espaçamento entre os campos */
 }
 
-.reminder-info .time {
-    font-size: 22px;
-    font-weight: 900;
-}
-
-.reminder-info .text {
-    font-size: 16px;
-    color: #ccc;
-    /* Impede que texto muito longo quebre o card */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.delete-reminder-btn {
-    width: 40px;
-    height: 40px;
-    background-color: var(--gray-2);
-    color: #ff5c5c;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
+.form-group {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0;
-    margin-left: 15px;
-    transition: background-color 0.2s, transform 0.2s;
+    flex-direction: column;
+    gap: 8px; /* Espaço entre o label e o input */
 }
 
-.delete-reminder-btn:hover {
-    background-color: #ff5c5c;
-    color: white;
-    transform: scale(1.1);
+.form-group label {
+    font-size: 15px; /* Tamanho da fonte do label */
+    font-weight: 500; /* Peso da fonte (semi-bold) */
+    color: var(--text-primary);
+    padding-left: 4px;
 }
 
-.empty-list-message {
-    text-align: center;
-    color: var(--gray-3);
-    padding: 40px 0;
+/* Estilo unificado para todos os campos de entrada */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 14px 16px; /* Padding interno dos campos */
+    border-radius: 12px; /* Bordas mais arredondadas, como nas imagens */
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
     font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-/* --- Responsividade Robusta --- */
-
-/* Tablets (modo retrato e paisagem) */
-@media (min-width: 600px) {
-    .reminders-list {
-        grid-template-columns: repeat(2, 1fr);
-    }
+/* Efeito de foco sutil */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px var(--accent-color-translucent); /* Sombra suave no foco */
 }
 
-/* Desktops */
-@media (min-width: 900px) {
-    .reminders-list {
-        grid-template-columns: repeat(3, 1fr);
-    }
+/* Cor do placeholder para maior contraste */
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--text-placeholder, #999); /* Usa variável ou um fallback */
+  opacity: 1;
 }
 
-/* Desktops com telas muito largas */
-@media (min-width: 1200px) {
-    .reminders-list {
-        grid-template-columns: repeat(4, 1fr);
-    }
+/* Customização do Select */
+.form-group select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%239e9e9e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+}
+
+/* Área de texto */
+.form-group textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+/* --- Botão Principal --- */
+.submit-btn {
+    width: 100%;
+    padding: 16px;
+    margin-top: 16px;
+    border-radius: 12px; /* Consistente com os inputs */
+    border: none;
+    background-color: var(--accent-color);
+    color: var(--text-accent);
+    font-weight: 600; /* Mais destaque no texto */
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.submit-btn:hover {
+    opacity: 0.9;
+}
+
+.submit-btn:active {
+    transform: scale(0.98); /* Efeito de clique */
+}
+
+/* --- Container do Resultado da IA --- */
+.ai-result-container {
+    margin-top: 32px;
+    padding: 20px;
+    background-color: var(--bg-secondary);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    display: none; /* Começa escondido */
+}
+
+.ai-result-container.visible {
+    display: block; /* Mostra o container quando tiver a classe */
+}
+
+.ai-result-container h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 0;
+    color: var(--text-secondary);
+    font-size: 15px;
+}
+
+.result-text {
+    white-space: pre-wrap;
+    line-height: 1.6;
+    font-size: 16px;
+    color: var(--text-primary);
+}
+
+/* --- Animação do Spinner --- */
+.spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }

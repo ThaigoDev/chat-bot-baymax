@@ -137,7 +137,7 @@ body {
 .history-item { display: flex; align-items: center; background-color: var(--bg-secondary); border-radius: 15px; padding: 15px; margin-bottom: 10px; }
 .history-icon { background-color: var(--bg-tertiary); width: 30px; height: 30px; min-width: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; }
 .history-icon svg { stroke: var(--text-secondary); }
-.theme-toggle { margin-left: auto; background: var(--bg-secondary); border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-primary); }
+.theme-toggle { background: var(--bg-secondary); border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-primary); }
 .theme-toggle .moon { display: block; }
 .theme-toggle .sun { display: none; }
 body.dark-mode .theme-toggle .moon { display: none; }
