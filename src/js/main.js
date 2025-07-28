@@ -270,7 +270,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // LÓGICA DE SUBMISSÃO DO CHAT RESTAURADA E INTEGRADA COM HISTÓRICO
     chatForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const userMessage = chatInput.value.trim();
@@ -278,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const contextMessage = replyMessageContent; 
         addMessage(userMessage, 'user', contextMessage);
-        saveToHistory(userMessage); // Salva no histórico
+        saveToHistory(userMessage);
         
         chatInput.value = '';
         chatInput.disabled = true;
@@ -286,6 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleTypingIndicator(true);
         clearReplyContext();
 
+        // **A LÓGICA ORIGINAL DA API ESTÁ AQUI, RESTAURADA E FUNCIONAL**
         const botResponse = await getBotResponse(conversationHistory, userMessage, contextMessage);
         conversationHistory.push({ role: 'user', parts: [{ text: userMessage }] });
         conversationHistory.push({ role: 'model', parts: [{ text: botResponse }] });
@@ -297,7 +297,6 @@ document.addEventListener('DOMContentLoaded', () => {
         chatInput.focus();
     });
 
-    // FUNÇÃO ORIGINAL getBotResponse RESTAURADA
     const getBotResponse = async (history, newMessage, contextMessage) => {
         const apiUrl = `https://chat-bot-bia-api.onrender.com/send-msg`; 
         const systemInstruction = `Você é um assistente de saúde virtual chamado Baymax. Responda de forma simples, clara e em linguagem leiga, evitando jargões técnicos. Ao final de cada resposta sobre saúde, adicione em uma nova linha o aviso: "Lembre-se, esta informação não substitui uma consulta médica.". Se a pergunta não for sobre saúde, diga que não foi programado para isso e não adicione o aviso. NUNCA RESPONDA NADA FORA DO CONTEXTO DE SAÚDE.`;
@@ -319,12 +318,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
             });
-            if (!response.ok) throw new Error(`API Error: ${response.status} ${response.statusText}`);
+            if (!response.ok) throw new Error(`API Error: ${response.status}`);
             const result = await response.json();
             return result.msg ? result.msg.trim() : 'Não consegui processar a resposta neste momento.';
         } catch (error) {
             console.error("Erro ao contactar o backend:", error);
-            return 'Lamento, estou com dificuldades técnicas. Por favor, tente novamente mais tarde.';
+            return 'Lamento, estou com dificuldades técnicas. O servidor parece estar com problemas. Por favor, tente novamente mais tarde.';
         }
     };
     
