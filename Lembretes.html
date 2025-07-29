@@ -103,5 +103,39 @@
             </main>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggleButton = document.getElementById('theme-toggle-btn');
+            const body = document.body;
+
+            // Função para aplicar um tema ('light' ou 'dark')
+            const applyTheme = (theme) => {
+                if (theme === 'dark') {
+                    body.classList.add('dark-mode');
+                } else {
+                    body.classList.remove('dark-mode');
+                }
+            };
+
+            // Evento de clique no botão para alternar o tema
+            themeToggleButton.addEventListener('click', () => {
+                const isDarkMode = body.classList.contains('dark-mode');
+                const newTheme = isDarkMode ? 'light' : 'dark';
+                applyTheme(newTheme);
+                // Salva a preferência do usuário no navegador
+                localStorage.setItem('theme', newTheme);
+            });
+
+            // Verifica o tema salvo ou a preferência do sistema ao carregar a página
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (savedTheme) {
+                applyTheme(savedTheme); // Usa o tema que o usuário escolheu antes
+            } else if (prefersDark) {
+                applyTheme('dark'); // Se for a primeira visita e o sistema for escuro, usa o modo escuro
+            }
+        });
+    </script>
     </body>
 </html>
