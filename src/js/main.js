@@ -248,6 +248,69 @@ document.addEventListener('DOMContentLoaded', () => {
         homeScreen.classList.add('active');
         renderHistory();
     });
+
+    // --- LÓGICA PARA RECONHECIMENTO DE VOZ ---
+    const micButton = document.getElementById('mic-button');
+
+    // Verifica se o navegador suporta a Web Speech API
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+    
+        // Configurações do reconhecimento
+        recognition.lang = 'pt-BR'; // Define o idioma para Português do Brasil
+        recognition.continuous = false; // Para de gravar após uma pausa na fala
+        recognition.interimResults = false; // Não queremos resultados parciais
+
+        micButton.addEventListener('click', () => {
+            if (!recognition.isRecording) {
+                try {
+                    recognition.start();
+                    micButton.classList.add('is-recording');
+                    chatInput.placeholder = 'Ouvindo...';
+                } catch(error) {
+                    console.error("Erro ao iniciar o reconhecimento de voz:", error);
+                }
+            }
+        });
+
+    // Evento chamado quando a gravação é encerrada
+    recognition.onend = () => {
+        micButton.classList.remove('is-recording');
+        chatInput.placeholder = 'Digite a sua dúvida aqui...';
+    };
+
+    // Evento chamado quando a IA transcreve a fala com sucesso
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        chatInput.value = transcript; // Coloca o texto transcrito no input
+        
+        // Opcional: envia a mensagem automaticamente após a transcrição
+        // chatForm.dispatchEvent(new Event('submit'));
+    };
+
+    // Evento para lidar com erros
+    recognition.onerror = (event) => {
+        if (event.error === 'no-speech') {
+            console.log("Nenhuma fala foi detectada.");
+            micButton.classList.remove('is-recording');
+            chatInput.placeholder = 'Digite a sua dúvida aqui...';
+            return; // Sai da função para não executar o código abaixo
+        }
+
+        // Para todos os outros erros (ex: microfone não permitido),
+        // continuamos a mostrar o alerta, pois são problemas reais.
+        console.error("Erro no reconhecimento de voz:", event.error);
+        alert(`Erro no reconhecimento: ${event.error}. Verifique as permissões do microfone.`);
+        micButton.classList.remove('is-recording');
+        chatInput.placeholder = 'Digite a sua dúvida aqui...';
+    };
+
+    } else {
+        // Esconde o botão se a API não for suportada
+        console.warn("Seu navegador não suporta a Web Speech API.");
+        micButton.style.display = 'none';
+    }
     
     // Rastreia cliques nos links secundários
     quickConsultLink.addEventListener('click', () => logAnalyticsEvent('select_content', { content_type: 'link', item_id: 'quick_consult' }));

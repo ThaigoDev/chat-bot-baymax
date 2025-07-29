@@ -456,3 +456,36 @@ body.dark-mode .theme-toggle .sun { display: block; }
 .auth-form.hidden {
     display: none;
 }
+
+.mic-button {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/*
+  Força a cor do ícone usando !important.
+  Isto vai sobrepor-se a qualquer outra regra de estilo que esteja em conflito.
+*/
+.mic-button svg path,
+.mic-button svg line {
+  stroke: var(--text-secondary) !important; /* << APLICAÇÃO FORÇADA */
+  fill: none !important;
+  transition: stroke 0.2s ease-in-out;
+}
+
+/* Efeito HOVER */
+.mic-button:hover svg path,
+.mic-button:hover svg line {
+  stroke: var(--accent-color) !important; /* << APLICAÇÃO FORÇADA */
+}
+
+/* Efeito GRAVANDO */
+.mic-button.is-recording svg path,
+.mic-button.is-recording svg line {
+  stroke: #ff4d4d !important; /* << APLICAÇÃO FORÇADA */
+}
