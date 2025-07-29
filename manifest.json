@@ -8,12 +8,12 @@
   "theme_color": "#D32F2F",
   "icons": [
     {
-      "src": "src/icons/icon-192x192.png",
+      "src": "src/icons/baymax_192x192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "src/icons/icon-512x512.png",
+      "src": "src/icons/baymax_512x512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
