@@ -3,20 +3,17 @@
  * v2.0 - Ajustes finos baseados nas imagens de referência.
  */
 
-body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    background-color: #000;
-    color: var(--text-primary);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
 
+ 
 /* --- Layout Principal --- */
 #consultation-screen {
     display: flex;
     flex-direction: column;
-    height: 100vh; /* Ocupa a altura toda da tela */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background-color: var(--bg-primary);
 }
 
