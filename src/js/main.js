@@ -1,3 +1,5 @@
+// Arquivo: src/js/main.js
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- CONFIGURAÇÃO DO FIREBASE ---
     const firebaseConfig = {
@@ -12,7 +14,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+    const analytics = firebase.analytics(); // Inicializa o Analytics
     const googleProvider = new firebase.auth.GoogleAuthProvider();
+    
+    // --- FUNÇÃO HELPER PARA ANALYTICS ---
+    const logAnalyticsEvent = (eventName, params = {}) => {
+        try {
+            analytics.logEvent(eventName, params);
+        } catch (error) {
+            console.error(`Falha ao registrar evento de analytics: ${eventName}`, error);
+        }
+    };
 
     // --- SELETORES DE ELEMENTOS DO DOM ---
     const authContainer = document.getElementById('auth-container');
@@ -46,10 +58,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const replyContextText = document.getElementById('reply-context-text');
     const replyContextCloseBtn = document.getElementById('reply-context-close');
     const historyList = document.getElementById('history-list');
+    const quickConsultLink = document.getElementById('quick-consult-link');
+    const articlesLink = document.getElementById('articles-link');
+
 
     // --- LÓGICA DE AUTENTICAÇÃO ---
     auth.onAuthStateChanged(user => {
         if (user) {
+            // Define o ID do usuário e propriedades para segmentação no Analytics
+            analytics.setUserId(user.uid);
+            analytics.setUserProperties({
+                user_name: user.displayName ? user.displayName.split(' ')[0] : 'anonymous',
+                user_email_provider: user.email ? user.email.split('@')[1] : 'unknown'
+            });
+
             authContainer.classList.add('hidden');
             updateUserInfo(user);
             renderHistory();
@@ -62,13 +84,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    googleSignInBtn.addEventListener('click', () => auth.signInWithPopup(googleProvider).catch(handleAuthError));
+    googleSignInBtn.addEventListener('click', () => {
+        auth.signInWithPopup(googleProvider)
+            .then(() => logAnalyticsEvent('login', { method: 'google' }))
+            .catch(handleAuthError);
+    });
 
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const email = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
-        auth.signInWithEmailAndPassword(email, password).catch(handleAuthError);
+        auth.signInWithEmailAndPassword(email, password)
+            .then(() => logAnalyticsEvent('login', { method: 'email' }))
+            .catch(handleAuthError);
     });
 
     registerForm.addEventListener('submit', (e) => {
@@ -78,14 +106,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = document.getElementById('register-password').value;
 
         auth.createUserWithEmailAndPassword(email, password)
-            .then(userCredential => userCredential.user.updateProfile({ displayName: name }))
+            .then(userCredential => {
+                logAnalyticsEvent('sign_up', { method: 'email' });
+                return userCredential.user.updateProfile({ displayName: name });
+            })
             .catch(handleAuthError);
     });
 
-    logoutBtn.addEventListener('click', () => auth.signOut());
+    logoutBtn.addEventListener('click', () => {
+        logAnalyticsEvent('logout');
+        auth.signOut();
+    });
 
     toggleLink.addEventListener('click', (e) => {
         e.preventDefault();
+        logAnalyticsEvent('select_content', { content_type: 'auth_form_toggle' });
         loginForm.classList.toggle('hidden');
         registerForm.classList.toggle('hidden');
         authError.textContent = '';
@@ -104,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleAuthError(error) {
+        logAnalyticsEvent('exception', { description: `auth_error_${error.code}`, fatal: false });
         switch (error.code) {
             case 'auth/user-not-found':
             case 'auth/wrong-password':
@@ -127,7 +163,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const applySavedTheme = () => body.classList.toggle('dark-mode', localStorage.getItem('theme') === 'dark');
     themeToggleBtn.addEventListener('click', () => {
         body.classList.toggle('dark-mode');
-        localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
+        const newTheme = body.classList.contains('dark-mode') ? 'dark' : 'light';
+        localStorage.setItem('theme', newTheme);
+        logAnalyticsEvent('change_theme', { new_theme: newTheme });
     });
     applySavedTheme();
 
@@ -148,7 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
         videoSplashScreen.style.display = 'block';
         setTimeout(() => { videoSplashScreen.style.opacity = '1'; }, 50);
 
-        introVideo.play().catch(error => {
+        introVideo.play().then(() => {
+            logAnalyticsEvent('video_intro_played');
+        }).catch(error => {
             console.error("Erro ao tentar tocar o vídeo:", error);
             showApp(); 
         });
@@ -160,37 +200,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const HISTORY_KEY = 'baymax_chat_history';
     const MAX_HISTORY_ITEMS = 5;
 
-    function getHistory() {
-        return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
-    }
-
+    function getHistory() { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
     function saveToHistory(message) {
         let history = getHistory();
         history = history.filter(item => item !== message);
         history.unshift(message);
-        if (history.length > MAX_HISTORY_ITEMS) {
-            history.pop();
-        }
+        if (history.length > MAX_HISTORY_ITEMS) { history.pop(); }
         localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
     }
-
     function renderHistory() {
         const history = getHistory();
         historyList.innerHTML = ''; 
-
         if (history.length === 0) {
             historyList.innerHTML = `<p class="empty-history">Seu histórico de conversas aparecerá aqui.</p>`;
             return;
         }
-
         history.forEach(itemText => {
             const historyItem = document.createElement('div');
             historyItem.className = 'history-item';
             historyItem.innerHTML = `
                 <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
-                <p>${itemText}</p>
-            `;
+                <p>${itemText}</p>`;
             historyItem.addEventListener('click', () => {
+                logAnalyticsEvent('select_content', { content_type: 'chat_history', item_id: itemText.substring(0, 40) });
                 homeScreen.classList.remove('active');
                 chatScreen.classList.add('active');
                 chatInput.value = itemText;
@@ -205,15 +237,21 @@ document.addEventListener('DOMContentLoaded', () => {
     let replyMessageContent = null;
 
     startChatBtn.addEventListener('click', () => {
+        logAnalyticsEvent('screen_view', { screen_name: 'chat_screen' });
         homeScreen.classList.remove('active');
         chatScreen.classList.add('active');
     });
 
     backToHomeBtn.addEventListener('click', () => {
+        logAnalyticsEvent('screen_view', { screen_name: 'home_screen' });
         chatScreen.classList.remove('active');
         homeScreen.classList.add('active');
         renderHistory();
     });
+    
+    // Rastreia cliques nos links secundários
+    quickConsultLink.addEventListener('click', () => logAnalyticsEvent('select_content', { content_type: 'link', item_id: 'quick_consult' }));
+    articlesLink.addEventListener('click', () => logAnalyticsEvent('select_content', { content_type: 'link', item_id: 'articles' }));
 
     const addMessage = (text, sender, replyToText = null) => {
         const wrapper = document.createElement('div');
@@ -248,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     const setReplyContext = (text) => {
+        logAnalyticsEvent('chat_reply_start');
         replyMessageContent = text;
         replyContextText.textContent = `Respondendo a: "${text}"`;
         replyContext.classList.add('active');
@@ -276,6 +315,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!userMessage) return;
 
         const contextMessage = replyMessageContent; 
+        logAnalyticsEvent('send_message', {
+             message_length: userMessage.length,
+             has_reply_context: !!contextMessage 
+        });
+        
         addMessage(userMessage, 'user', contextMessage);
         saveToHistory(userMessage);
         
@@ -285,7 +329,6 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleTypingIndicator(true);
         clearReplyContext();
 
-        // **A LÓGICA ORIGINAL DA API ESTÁ AQUI, RESTAURADA E FUNCIONAL**
         const botResponse = await getBotResponse(conversationHistory, userMessage, contextMessage);
         conversationHistory.push({ role: 'user', parts: [{ text: userMessage }] });
         conversationHistory.push({ role: 'model', parts: [{ text: botResponse }] });
@@ -322,6 +365,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
             return result.msg ? result.msg.trim() : 'Não consegui processar a resposta neste momento.';
         } catch (error) {
+            logAnalyticsEvent('exception', { description: 'api_error', fatal: false });
             console.error("Erro ao contactar o backend:", error);
             return 'Lamento, estou com dificuldades técnicas. O servidor parece estar com problemas. Por favor, tente novamente mais tarde.';
         }
