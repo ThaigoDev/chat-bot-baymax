@@ -3,11 +3,17 @@
  * v2.0 - Ajustes finos baseados nas imagens de referência.
  */
 
+
+ 
 /* --- Layout Principal --- */
 #consultation-screen {
     display: flex;
     flex-direction: column;
-    height: 100vh; /* Ocupa a altura toda da tela */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background-color: var(--bg-primary);
 }
 
