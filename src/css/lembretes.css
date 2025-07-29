@@ -34,7 +34,7 @@
 }
 
 .back-button {
-    color: var(--text-secondary);
+    color: var(--accent-color);
 }
 
 /* --- Estilos do Formulário --- */

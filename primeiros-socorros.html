@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Primeiros Socorros - Baymax</title>
-    <link rel="stylesheet" href="src/css/main.css"> <link rel="stylesheet" href="src/css/primeiros-socorros.css"> 
+    <link rel="stylesheet" href="src/css/main.css"> 
+    <link rel="stylesheet" href="src/css/primeiros-socorros.css"> 
 </head>
 <body class="dark-mode-base"> <div class="guide-container">
         <header class="guide-header">
@@ -12,6 +13,10 @@
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
             </a>
             <h1>Guia de Primeiros Socorros</h1>
+            <button id="theme-toggle-btn" class="theme-toggle" aria-label="Mudar tema">
+                    <svg class="sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg class="moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
         </header>
 
         <div class="disclaimer-box">
@@ -96,6 +101,39 @@
             </details>
         </main>
     </div>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggleButton = document.getElementById('theme-toggle-btn');
+            const body = document.body;
 
+            // Função para aplicar um tema ('light' ou 'dark')
+            const applyTheme = (theme) => {
+                if (theme === 'dark') {
+                    body.classList.add('dark-mode');
+                } else {
+                    body.classList.remove('dark-mode');
+                }
+            };
+
+            // Evento de clique no botão para alternar o tema
+            themeToggleButton.addEventListener('click', () => {
+                const isDarkMode = body.classList.contains('dark-mode');
+                const newTheme = isDarkMode ? 'light' : 'dark';
+                applyTheme(newTheme);
+                // Salva a preferência do usuário no navegador
+                localStorage.setItem('theme', newTheme);
+            });
+
+            // Verifica o tema salvo ou a preferência do sistema ao carregar a página
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (savedTheme) {
+                applyTheme(savedTheme); // Usa o tema que o usuário escolheu antes
+            } else if (prefersDark) {
+                applyTheme('dark'); // Se for a primeira visita e o sistema for escuro, usa o modo escuro
+            }
+        });
+    </script>
 </body>
 </html>
