@@ -256,7 +256,25 @@ body.dark-mode .theme-toggle .sun { display: block; }
 .typing-indicator { display: flex; align-items: center; padding-top: 10px; margin-left: 50px; opacity: 0; transform: translateY(10px); animation: fadeIn 0.4s ease forwards; }
 .typing-indicator.hidden { display: none; }
 .typing-indicator-text { margin-left: 10px; color: var(--accent-color); font-size: 14px; }
-.reply-context { background-color: var(--bg-tertiary); padding: 8px 12px; margin-bottom: 8px; border-radius: 12px; border-left: 3px solid var(--accent-color); font-size: 12px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; display: none; }
+
+.reply-context {
+    background-color: var(--bg-tertiary);
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    border-left: 3px solid var(--accent-color);
+    font-size: 12px;
+    color: var(--text-secondary);
+    position: relative;
+    display: none;
+
+    /* APRIMORAMENTOS */
+    line-height: 1.4; /* Melhora a leitura em múltiplas linhas */
+    max-height: 50px; /* Define uma altura máxima para a caixa */
+    overflow-y: auto; /* Adiciona scroll se o texto for muito grande */
+    word-wrap: break-word; /* Garante a quebra de palavras longas */
+}
+
 .reply-context.active { display: block; }
 .reply-context-close { position: absolute; top: 50%; right: 10px; transform: translateY(-50%); background: none; border: none; color: var(--text-primary); cursor: pointer; font-size: 16px; }
 .chat-input-form { display: flex; align-items: center; }
