@@ -94,3 +94,31 @@ body.dark-mode-base {
 .topic-content li {
     margin-bottom: 10px;
 }
+
+
+.guide-header {
+    display: flex; 
+    align-items: center; 
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    gap: 15px;
+}
+
+.guide-header h1 {
+    flex-grow: 1; 
+    font-size: 22px;
+    margin: 0;
+    text-align: center; 
+    color: var(--text-primary);
+}
+
+
+.back-button {
+    flex-shrink: 0;
+}
+
+
+.theme-toggle {
+    flex-shrink: 0;
+}
