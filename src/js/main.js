@@ -263,14 +263,23 @@ document.addEventListener('DOMContentLoaded', () => {
         recognition.interimResults = false; // Não queremos resultados parciais
 
         micButton.addEventListener('click', () => {
-            if (!recognition.isRecording) {
+            const isRecording = micButton.classList.contains('is-recording');
+
+            if (isRecording) {
+                // Se estiver gravando, para a gravação.
+                recognition.stop();
+                console.log("Gravação interrompida pelo usuário.");
+                // O evento 'onend' cuidará de limpar a interface (remover a cor, etc.)
+            } else {
+                // Se não estiver gravando, inicia a gravação.
                 try {
                     recognition.start();
                     micButton.classList.add('is-recording');
                     chatInput.placeholder = 'Ouvindo...';
-                } catch(error) {
+                } catch (error) {
                     console.error("Erro ao iniciar o reconhecimento de voz:", error);
-                }
+                    alert("Não foi possível iniciar o reconhecimento de voz. Tente novamente.");
+                }       
             }
         });
 
@@ -301,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Para todos os outros erros (ex: microfone não permitido),
         // continuamos a mostrar o alerta, pois são problemas reais.
         console.error("Erro no reconhecimento de voz:", event.error);
-        alert(`Erro no reconhecimento: ${event.error}. Verifique as permissões do microfone.`);
+        alert(`Microfone não autorizado. Verifique as permissões do microfone nas configurações do navegador.`);
         micButton.classList.remove('is-recording');
         chatInput.placeholder = 'Digite a sua dúvida aqui...';
     };
