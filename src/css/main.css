@@ -1,3 +1,10 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* O resto do seu CSS continua aqui... */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
 
 /* --- ESTILOS PARA INTRODUÇÃO E VÍDEO --- */
@@ -148,11 +155,7 @@ body.dark-mode .theme-toggle .sun { display: block; }
 
 #chat-screen {
     display: grid;
-    /* Define 3 linhas:
-       1. Cabeçalho (altura automática)
-       2. Mensagens (ocupa todo o espaço que sobrar)
-       3. Input (altura automática)
-    */
+
     grid-template-rows: auto 1fr auto;
     height: 100%;
     overflow: hidden; /* Garante que nada saia da tela */
@@ -186,7 +189,7 @@ body.dark-mode .theme-toggle .sun { display: block; }
     border-top: 1px solid var(--border-color); 
     z-index: 10; 
     padding: 15px 20px;
-    /* CORREÇÃO PARA A BARRA NATIVA DO CELULAR (SAFE AREA) */
+    
     padding-bottom: calc(25px + env(safe-area-inset-bottom));
 }
 
@@ -235,7 +238,7 @@ body.dark-mode .theme-toggle .sun { display: block; }
     border-radius: 20px; 
     line-height: 1.5; 
     white-space: pre-wrap; 
-    word-wrap: break-word; 
+    word-wrap: break-word; min-width: 0;
 }
 
 .message-bubble.user { 
