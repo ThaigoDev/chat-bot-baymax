@@ -1,3 +1,12 @@
+*:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent; /* Remove o realce de toque no iOS e Android */
+}
+
 /* Garante que o tema base seja aplicado */
 body.dark-mode-base {
     background-color: var(--bg-main);

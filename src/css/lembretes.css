@@ -1,10 +1,13 @@
-/*
- * Estilos para a tela de Consulta Rápida
- * v2.0 - Ajustes finos baseados nas imagens de referência.
- */
 
+*:focus {
+    outline: none;
+    box-shadow: none;
+}
 
- 
+* {
+  -webkit-tap-highlight-color: transparent; /* Remove o realce de toque no iOS e Android */
+}
+
 /* --- Layout Principal --- */
 #consultation-screen {
     display: flex;

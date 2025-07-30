@@ -4,6 +4,16 @@
   box-sizing: border-box;
 }
 
+
+*:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent; /* Remove o realce de toque no iOS e Android */
+}
+
 /* O resto do seu CSS continua aqui... */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
 
