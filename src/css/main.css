@@ -4,6 +4,12 @@
   box-sizing: border-box;
 }
 
+
+*:focus {
+    outline: none;
+    box-shadow: none;
+}
+
 /* O resto do seu CSS continua aqui... */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
 
