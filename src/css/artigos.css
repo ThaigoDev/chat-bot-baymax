@@ -4,6 +4,10 @@
     box-shadow: none;
 }
 
+* {
+  -webkit-tap-highlight-color: transparent; /* Remove o realce de toque no iOS e Android */
+}
+
 /* --- Estilo Base da Tela de Artigos --- */
 #articles-screen {
     background-color: var(--bg-main);
