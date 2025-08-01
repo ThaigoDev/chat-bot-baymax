@@ -4,17 +4,9 @@
   box-sizing: border-box;
 }
 
-
-*:focus {
-    outline: none;
-    box-shadow: none;
-}
-
-* {
-  -webkit-tap-highlight-color: transparent; /* Remove o realce de toque no iOS e Android */
-}
-
+/* O resto do seu CSS começa aqui... */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+/* ...etc */
 
 #video-splash-screen {
     position: fixed;
@@ -157,7 +149,7 @@ body.dark-mode .theme-toggle .sun { display: block; }
 }
 
 .chat-header { 
-    display: flex; 
+    display: flex;
     align-items: center; 
     justify-content: space-between; 
     padding: 15px; 
@@ -183,7 +175,7 @@ body.dark-mode .theme-toggle .sun { display: block; }
     background-color: var(--bg-secondary); 
     border-top: 1px solid var(--border-color); 
     z-index: 10; 
-    padding: 15px 20px;
+    
     padding-bottom: calc(25px + env(safe-area-inset-bottom));
 }
 
@@ -277,8 +269,7 @@ body.dark-mode .theme-toggle .sun { display: block; }
 .spinner { border: 2px solid rgba(229, 57, 53, 0.3); border-top: 2px solid var(--accent-color); border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-
-@media (min-width: 768px) {
+@media (min-width: 738px) {
     *,
 *::before,
 *::after {
