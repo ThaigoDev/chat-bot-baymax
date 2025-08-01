@@ -175,8 +175,8 @@ body.dark-mode .theme-toggle .sun { display: block; }
     background-color: var(--bg-secondary); 
     border-top: 1px solid var(--border-color); 
     z-index: 10; 
-    
-    padding-bottom: calc(25px + env(safe-area-inset-bottom));
+    padding-top: 10px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
 }
 
 .message-wrapper { 
