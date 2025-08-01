@@ -1,3 +1,4 @@
+/* --- Estilo Base da Tela de Artigos --- */
 #articles-screen {
     background-color: var(--bg-main);
     display: flex;

@@ -1,3 +1,11 @@
+/*
+ * Estilos para a tela de Consulta Rápida
+ * v2.0 - Ajustes finos baseados nas imagens de referência.
+ */
+
+
+ 
+/* --- Layout Principal --- */
 #consultation-screen {
     display: flex;
     flex-direction: column;
