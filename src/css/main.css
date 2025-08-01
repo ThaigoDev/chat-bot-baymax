@@ -4,22 +4,17 @@
   box-sizing: border-box;
 }
 
-/* O resto do seu CSS continua aqui... */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-
-/* --- ESTILOS PARA INTRODUÇÃO E VÍDEO --- */
-/* Remova os blocos #interaction-screen e #start-experience-btn daqui */
 
 #video-splash-screen {
     position: fixed;
     inset: 0;
     background-color: #000;
     z-index: 10000;
-    opacity: 0; /* Inicia invisível */
+    opacity: 0;
     transition: opacity 0.8s ease-out;
     display: none;
 }
-/* O resto do CSS permanece o mesmo... */
 
 #intro-video {
     width: 100%;
@@ -29,12 +24,12 @@
 
 video::-webkit-media-controls { display: none !important; }
 video { pointer-events: none; }
-.hidden { opacity: 0; pointer-events: none; }
-/* ------------------------------------------- */
+.hidden { 
+    opacity: 0; 
+    pointer-events: none; }
 
-/* --- VARIÁVEIS DE COR (TEMA CLARO E ESCURO) --- */
 :root {
-    --accent-color: #D32F2F; /* Vermelho Baymax */
+    --accent-color: #D32F2F;
     --bg-main: #FFFFFF;
     --bg-secondary: #F0F2F5;
     --bg-tertiary: #E9E9EB;
@@ -46,7 +41,7 @@ video { pointer-events: none; }
 }
 
 body.dark-mode {
-    --accent-color: #E53935; /* Vermelho um pouco mais vivo para o escuro */
+    --accent-color: #E53935; 
     --bg-main: #111111;
     --bg-secondary: #1D1D1D;
     --bg-tertiary: #2C2C2E;
@@ -67,16 +62,12 @@ body {
 }
 
 .app-container {
-    /* --- CORREÇÃO APLICADA AQUI --- */
-    /* Por defeito (mobile-first), o container é fixo e ocupa a tela toda */
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    border-radius: 0; /* Sem bordas arredondadas em tela cheia */
-    /* --- FIM DA CORREÇÃO --- */
-    
+    border-radius: 0;
     visibility: hidden;
     opacity: 0;
     width: 100%;
@@ -94,7 +85,6 @@ body {
     opacity: 1;
 }
 
-/* --- Ecrãs --- */
 .screen {
     position: absolute;
     width: 100%;
@@ -116,7 +106,6 @@ body {
     transform: scale(1);
 }
 
-/* --- Estilos da Home Screen --- */
 #home-screen {
     background: var(--bg-main);
     overflow-y: auto;
@@ -149,16 +138,11 @@ body {
 body.dark-mode .theme-toggle .moon { display: none; }
 body.dark-mode .theme-toggle .sun { display: block; }
 
-/**************************************************/
-/* --- ESTILOS DO CHAT (SOLUÇÃO FINAL COM GRID) --- */
-/**************************************************/
-
 #chat-screen {
     display: grid;
-
     grid-template-rows: auto 1fr auto;
     height: 100%;
-    overflow: hidden; /* Garante que nada saia da tela */
+    overflow: hidden;
     max-height: 100%;
 }
 
@@ -171,6 +155,7 @@ body.dark-mode .theme-toggle .sun { display: block; }
     border-bottom: 1px solid var(--border-color); 
     z-index: 10;
 }
+
 .chat-header button { background: none; border: none; cursor: pointer; padding: 5px; color: var(--accent-color); }
 .chat-header button svg { stroke: var(--accent-color); }
 .chat-title { font-size: 18px; font-weight: bold; margin: 0; }
@@ -189,11 +174,8 @@ body.dark-mode .theme-toggle .sun { display: block; }
     border-top: 1px solid var(--border-color); 
     z-index: 10; 
     padding: 15px 20px;
-    
     padding-bottom: calc(25px + env(safe-area-inset-bottom));
 }
-
-/* --- ESTILOS DAS MENSAGENS COM AVATAR --- */
 
 .message-wrapper { 
     display: flex; 
@@ -207,21 +189,20 @@ body.dark-mode .theme-toggle .sun { display: block; }
 
 .message-wrapper.user { 
     justify-content: flex-end;
-    margin-left: auto; /* Alinha o wrapper à direita */
+    margin-left: auto;
 }
 
 .message-wrapper.bot { 
     justify-content: flex-start; 
-    margin-right: auto; /* Alinha o wrapper à esquerda */
+    margin-right: auto;
 }
 
-/* NOVO: Estilo para o avatar do bot na mensagem */
 .bot-avatar {
     width: 32px;
     height: 32px;
     border-radius: 50%;
     overflow: hidden;
-    flex-shrink: 0; /* Impede que o avatar encolha */
+    flex-shrink: 0;
 }
 
 .bot-avatar img {
@@ -233,7 +214,7 @@ body.dark-mode .theme-toggle .sun { display: block; }
 @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
 
 .message-bubble { 
-    max-width: 100%; /* O wrapper já limita a largura */
+    max-width: 100%;
     padding: 12px 18px; 
     border-radius: 20px; 
     line-height: 1.5; 
@@ -270,12 +251,10 @@ body.dark-mode .theme-toggle .sun { display: block; }
     color: var(--text-secondary);
     position: relative;
     display: none;
-
-    /* APRIMORAMENTOS */
-    line-height: 1.4; /* Melhora a leitura em múltiplas linhas */
-    max-height: 50px; /* Define uma altura máxima para a caixa */
-    overflow-y: auto; /* Adiciona scroll se o texto for muito grande */
-    word-wrap: break-word; /* Garante a quebra de palavras longas */
+    line-height: 1.4; 
+    max-height: 50px; 
+    overflow-y: auto; 
+    word-wrap: break-word;
 }
 
 .reply-context.active { display: block; }
@@ -288,7 +267,7 @@ body.dark-mode .theme-toggle .sun { display: block; }
 .spinner { border: 2px solid rgba(229, 57, 53, 0.3); border-top: 2px solid var(--accent-color); border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-/* --- Responsividade --- */
+
 @media (min-width: 768px) {
     *,
 *::before,
@@ -296,7 +275,6 @@ body.dark-mode .theme-toggle .sun { display: block; }
   box-sizing: border-box;
 }
 
-/* O resto do seu CSS continua aqui... */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
 
     .app-container {
@@ -310,7 +288,7 @@ body.dark-mode .theme-toggle .sun { display: block; }
     .secondary-action-row { flex: 1; flex-direction: column; }
     .messages-list, .chat-input-container { padding-left: 30px; padding-right: 30px; }
 }
-/* --- ESTILOS PARA TELA DE AUTENTICAÇÃO --- */
+
 #auth-container {
     position: fixed;
     inset: 0;
@@ -369,7 +347,7 @@ body.dark-mode .theme-toggle .sun { display: block; }
     color: var(--text-primary);
     font-family: 'Inter', sans-serif;
     font-size: 16px;
-    box-sizing: border-box; /* Garante que padding não afete a largura */
+    box-sizing: border-box;
 }
 .auth-form input:focus {
     outline: none;
@@ -389,7 +367,7 @@ body.dark-mode .theme-toggle .sun { display: block; }
     transition: background-color 0.2s;
 }
 .auth-button.register {
-    background-color: #4CAF50; /* Um verde para diferenciar */
+    background-color: #4CAF50;
 }
 .auth-button:hover {
     opacity: 0.9;
@@ -399,7 +377,7 @@ body.dark-mode .theme-toggle .sun { display: block; }
     color: #D32F2F;
     font-size: 14px;
     margin-top: 15px;
-    min-height: 20px; /* Evita que o layout pule */
+    min-height: 20px;
 }
 
 .separator {
@@ -479,25 +457,19 @@ body.dark-mode .theme-toggle .sun { display: block; }
   justify-content: center;
 }
 
-/*
-  Força a cor do ícone usando !important.
-  Isto vai sobrepor-se a qualquer outra regra de estilo que esteja em conflito.
-*/
 .mic-button svg path,
 .mic-button svg line {
-  stroke: var(--text-secondary) !important; /* << APLICAÇÃO FORÇADA */
+  stroke: var(--text-secondary) !important;
   fill: none !important;
   transition: stroke 0.2s ease-in-out;
 }
 
-/* Efeito HOVER */
 .mic-button:hover svg path,
 .mic-button:hover svg line {
-  stroke: var(--accent-color) !important; /* << APLICAÇÃO FORÇADA */
+  stroke: var(--accent-color) !important; 
 }
 
-/* Efeito GRAVANDO */
 .mic-button.is-recording svg path,
 .mic-button.is-recording svg line {
-  stroke: #ff4d4d !important; /* << APLICAÇÃO FORÇADA */
+  stroke: #ff4d4d !important;
 }

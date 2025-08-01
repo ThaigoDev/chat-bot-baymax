@@ -1,11 +1,3 @@
-/*
- * Estilos para a tela de Consulta Rápida
- * v2.0 - Ajustes finos baseados nas imagens de referência.
- */
-
-
- 
-/* --- Layout Principal --- */
 #consultation-screen {
     display: flex;
     flex-direction: column;
@@ -20,11 +12,10 @@
 .consultation-content {
     flex-grow: 1;
     overflow-y: auto;
-    padding: 16px 24px 32px 24px; /* Ajuste de padding para mais respiro */
-    -webkit-overflow-scrolling: touch; /* Melhora a rolagem em dispositivos móveis */
+    padding: 16px 24px 32px 24px; 
+    -webkit-overflow-scrolling: touch; 
 }
 
-/* --- Ajustes no Header (herdado do main.css, mas garantindo consistência) --- */
 .chat-header {
     display: flex;
     flex-direction: row;
@@ -37,33 +28,31 @@
     color: var(--accent-color);
 }
 
-/* --- Estilos do Formulário --- */
 #consultation-form {
     display: flex;
     flex-direction: column;
-    gap: 24px; /* Aumenta o espaçamento entre os campos */
+    gap: 24px; 
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 8px; /* Espaço entre o label e o input */
+    gap: 8px; 
 }
 
 .form-group label {
-    font-size: 15px; /* Tamanho da fonte do label */
-    font-weight: 500; /* Peso da fonte (semi-bold) */
+    font-size: 15px; 
+    font-weight: 500; 
     color: var(--text-primary);
     padding-left: 4px;
 }
 
-/* Estilo unificado para todos os campos de entrada */
 .form-group input,
 .form-group select,
 .form-group textarea {
     width: 100%;
-    padding: 14px 16px; /* Padding interno dos campos */
-    border-radius: 12px; /* Bordas mais arredondadas, como nas imagens */
+    padding: 14px 16px; 
+    border-radius: 12px; 
     border: 1px solid var(--border-color);
     background-color: var(--bg-secondary);
     color: var(--text-primary);
@@ -73,23 +62,20 @@
     transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-/* Efeito de foco sutil */
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
     outline: none;
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px var(--accent-color-translucent); /* Sombra suave no foco */
+    box-shadow: 0 0 0 3px var(--accent-color-translucent); 
 }
 
-/* Cor do placeholder para maior contraste */
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: var(--text-placeholder, #999); /* Usa variável ou um fallback */
+  color: var(--text-placeholder, #999);
   opacity: 1;
 }
 
-/* Customização do Select */
 .form-group select {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -99,22 +85,20 @@
     background-position: right 16px center;
 }
 
-/* Área de texto */
 .form-group textarea {
     resize: vertical;
     min-height: 90px;
 }
 
-/* --- Botão Principal --- */
 .submit-btn {
     width: 100%;
     padding: 16px;
     margin-top: 16px;
-    border-radius: 12px; /* Consistente com os inputs */
+    border-radius: 12px;
     border: none;
     background-color: var(--accent-color);
     color: var(--text-accent);
-    font-weight: 600; /* Mais destaque no texto */
+    font-weight: 600; 
     font-size: 16px;
     cursor: pointer;
     transition: transform 0.2s ease, opacity 0.2s ease;
@@ -125,21 +109,20 @@
 }
 
 .submit-btn:active {
-    transform: scale(0.98); /* Efeito de clique */
+    transform: scale(0.98); 
 }
 
-/* --- Container do Resultado da IA --- */
 .ai-result-container {
     margin-top: 32px;
     padding: 20px;
     background-color: var(--bg-secondary);
     border-radius: 16px;
     border: 1px solid var(--border-color);
-    display: none; /* Começa escondido */
+    display: none;
 }
 
 .ai-result-container.visible {
-    display: block; /* Mostra o container quando tiver a classe */
+    display: block;
 }
 
 .ai-result-container h3 {
@@ -166,7 +149,6 @@
     color: var(--text-primary);
 }
 
-/* --- Animação do Spinner --- */
 .spinner {
     width: 28px;
     height: 28px;

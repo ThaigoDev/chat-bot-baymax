@@ -1,4 +1,3 @@
-/* Garante que o tema base seja aplicado */
 body.dark-mode-base {
     background-color: var(--bg-main);
     color: var(--text-primary);
@@ -34,7 +33,7 @@ body.dark-mode-base {
 }
 
 .disclaimer-box {
-    background-color: #d32f2f20; /* Vermelho do tema com transparência */
+    background-color: #d32f2f20; 
     border: 1px solid var(--accent-color);
     color: var(--text-primary);
     padding: 15px;

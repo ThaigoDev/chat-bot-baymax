@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Início do Processo ---
+
     if (NEWS_API_KEY === 'pub_454749f7e53a25d2b378174f7623a31c19b01') {
         showError('⚠️ Configure sua chave de API no arquivo "src/js/artigos.js" para começar.');
     } else {
