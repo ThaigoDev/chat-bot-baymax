@@ -1,3 +1,12 @@
+*{
+    -webkit-tap-highlight-color: transparent;
+}
+
+*:focus {
+    outline: none;
+    box-shadow: none;
+}
+
 /* Garante que o tema base seja aplicado */
 body.dark-mode-base {
     background-color: var(--bg-main);

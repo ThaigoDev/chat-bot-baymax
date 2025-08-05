@@ -1,4 +1,13 @@
 /* --- Estilo Base da Tela de Artigos --- */
+*{
+    -webkit-tap-highlight-color: transparent;
+}
+
+*:focus {
+    outline: none;
+    box-shadow: none;
+}
+
 #articles-screen {
     background-color: var(--bg-main);
     display: flex;

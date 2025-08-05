@@ -4,7 +4,16 @@
  */
 
 
- 
+
+*{
+    -webkit-tap-highlight-color: transparent;
+}
+
+*:focus {
+    outline: none;
+    box-shadow: none;
+}
+
 /* --- Layout Principal --- */
 #consultation-screen {
     display: flex;
