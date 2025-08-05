@@ -484,3 +484,53 @@ body.dark-mode .theme-toggle .sun { display: block; }
 .mic-button.is-recording svg line {
   stroke: #ff4d4d !important;
 }
+
+.history-section { margin-top: 40px; }
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-color);
+  padding-top: 20px;
+  margin-bottom: 15px;
+}
+
+.history-title { 
+  font-size: 20px; 
+  font-weight: bold; 
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.clear-history-button {
+  background: none;
+  border: none;
+  color: var(--accent-color);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.clear-history-button {
+  background: none;
+  border: none;
+  color: var(--text-secondary); /* Cor mais sutil */
+  cursor: pointer;
+  padding: 5px; /* Adiciona um pouco de área de clique */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.clear-history-button:hover {
+  color: var(--accent-color);
+  background-color: var(--bg-tertiary);
+}
+
+.clear-history-button svg {
+  stroke: currentColor;
+}

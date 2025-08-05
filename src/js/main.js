@@ -198,6 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- LÓGICA DO HISTÓRICO ---
     const HISTORY_KEY = 'baymax_chat_history';
+    const clearHistoryBtn = document.getElementById('clear-history-btn');
     const MAX_HISTORY_ITEMS = 5;
 
     function getHistory() { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
@@ -231,6 +232,14 @@ document.addEventListener('DOMContentLoaded', () => {
             historyList.appendChild(historyItem);
         });
     }
+
+    function clearHistory() {
+        logAnalyticsEvent('clear_chat_history'); // Opcional: para análise de uso
+        localStorage.removeItem(HISTORY_KEY);
+        renderHistory(); // Re-renderiza a lista, que agora estará vazia
+    }
+
+    clearHistoryBtn.addEventListener('click', clearHistory);
 
     // --- CÓDIGO DO CHATBOT ---
     let conversationHistory = [];
@@ -444,4 +453,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     addMessage('Olá! Eu sou o Baymax. Para começar, faça uma pergunta ou descreva seus sintomas.', 'bot');
+    
+    
 });
