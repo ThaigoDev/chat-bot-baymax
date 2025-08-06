@@ -148,15 +148,13 @@
             display: flex; flex-direction: column;
             gap: 25px; margin-bottom: 25px;
         }
-
-        /* --- INÍCIO DA CORREÇÃO DEFINITIVA --- */
+        
         .grafico-container {
             position: relative;
             width: 100%;
             background-color: var(--bg-secondary);
             border-radius: 16px;
             border: 1px solid var(--border-color);
-            /* A propriedade 'aspect-ratio' foi removida מכאן para evitar o loop de renderização. */
         }
 
         .grafico-container h4 {
@@ -171,7 +169,6 @@
         .grafico-canvas-wrapper {
             position: relative;
             height: 0;
-            /* Proporção 4:3 para telas menores */
             padding-bottom: 75%;
         }
 
@@ -182,7 +179,6 @@
             width: 100%;
             height: 100%;
         }
-        /* --- FIM DA CORREÇÃO DEFINITIVA --- */
 
         #texto-analise {
             padding: 20px; margin-top: 20px; background-color: var(--bg-secondary);
@@ -206,7 +202,6 @@
                 flex-grow: 0;
             }
             .grafico-canvas-wrapper {
-                 /* Proporção 1:1 (quadrado) para telas maiores */
                 padding-bottom: 100%;
             }
             .result-actions { flex-direction: row; justify-content: center; }
@@ -234,6 +229,16 @@
                     <div class="form-group"><label for="comorbidades">Tem comorbidades (doenças crônicas)? Se sim, quais?</label><textarea id="comorbidades" name="comorbidades" rows="3" placeholder="Ex: Diabetes tipo 2, Hipertensão. Se não tiver, deixe em branco."></textarea></div>
                     <div class="form-group"><label for="medicamentos">Toma algum medicamento de uso contínuo?</label><textarea id="medicamentos" name="medicamentos" rows="3" placeholder="Ex: Metformina 500mg. Se não tomar, deixe em branco."></textarea></div>
                     <div class="form-group"><label for="familiares">Algum familiar de primeiro grau tem doença crônica?</label><textarea id="familiares" name="familiares" rows="3" placeholder="Ex: Mãe com hipertensão, Pai com colesterol alto."></textarea></div>
+                    
+                    <div class="form-group">
+                        <label for="drogas">Faz uso de alguma droga lícita ou ilícita (álcool, tabaco, etc.)?</label>
+                        <textarea id="drogas" name="drogas" rows="3" placeholder="Ex: Fumo 10 cigarros por dia. Se não, deixe em branco."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="cirurgias">Já fez alguma cirurgia? Se sim, qual?</label>
+                        <textarea id="cirurgias" name="cirurgias" rows="3" placeholder="Ex: Cirurgia de apêndice em 2015. Se não, deixe em branco."></textarea>
+                    </div>
+                    
                     <div class="form-group"><label for="sintomas">Quais sintomas você está sentindo?</label><textarea id="sintomas" name="sintomas" rows="4" placeholder="Descreva seus sintomas gerais aqui..." required></textarea></div>
                     <div class="form-group"><label for="frequencia">Com qual frequência sente esses sintomas?</label><input type="text" id="frequencia" name="frequencia" placeholder="Ex: Diariamente, 3 vezes por semana" required></div>
                     <div class="form-group"><label for="intensidade">Qual a intensidade desses sintomas?</label><select id="intensidade" name="intensidade" required><option value="" disabled selected>Selecione a intensidade...</option><option value="leve">Leve</option><option value="moderada">Moderada</option><option value="intensa">Intensa</option></select></div>
@@ -402,14 +407,7 @@
                 grid: style.getPropertyValue('--border-color').trim(),
                 bg: style.getPropertyValue('--bg-primary').trim(),
                 radarFill: style.getPropertyValue('--accent-color-translucent').trim(),
-                palette: [
-                    accentColor,
-                    '#3478F6',
-                    '#34C759',
-                    atencaoColor,
-                    '#AF52DE',
-                    urgenteColor
-                ]
+                palette: [ accentColor, '#3478F6', '#34C759', atencaoColor, '#AF52DE', urgenteColor ]
             };
 
             Chart.defaults.font.family = "'Inter', sans-serif";
@@ -470,6 +468,7 @@
             document.querySelectorAll('.grafico-container').forEach(c => c.style.display = 'none');
         });
         
+        // --- FUNÇÃO DE EXPORTAR PDF CORRIGIDA E MELHORADA ---
         exportPdfButton.addEventListener('click', async () => {
             if (!lastAiData) return;
 
@@ -478,14 +477,45 @@
             const margin = 15;
             const pageWidth = doc.internal.pageSize.getWidth();
             const pageHeight = doc.internal.pageSize.getHeight();
-            let y = margin;
+            let y = margin; // Posição Y atual na página
 
-            doc.setFont('helvetica', 'bold').setFontSize(20).setTextColor(40, 40, 40).text("Relatório de Pré-Análise", pageWidth / 2, y, { align: "center" });
-            y += 10;
+            // Título e Data
+            doc.setFont('helvetica', 'bold').setFontSize(18).setTextColor(40, 40, 40);
+            doc.text("Relatório de Pré-Análise Baymax", pageWidth / 2, y, { align: "center" });
+            y += 8;
+            doc.setFont('helvetica', 'normal').setFontSize(10).setTextColor(100, 100, 100);
+            doc.text(new Date().toLocaleDateString('pt-BR', { dateStyle: 'full' }), pageWidth / 2, y, { align: 'center' });
+            y += 15;
 
+            // Dados do Formulário (NOVO)
+            doc.setFont('helvetica', 'bold').setFontSize(12).setTextColor(40, 40, 40);
+            doc.text("Resumo das Informações Fornecidas", margin, y);
+            y += 7;
+            doc.setFont('helvetica', 'normal').setFontSize(10);
+            
+            const formData = new FormData(consultationForm);
+            for (const [key, value] of formData.entries()) {
+                if (value.trim() !== '') {
+                    const labelElement = document.querySelector(`label[for="${key}"]`);
+                    const labelText = labelElement ? labelElement.innerText : key;
+                    
+                    const textLines = doc.splitTextToSize(`- ${labelText}: ${value}`, pageWidth - (margin * 2) - 5);
+                    if (y + (textLines.length * 5) > pageHeight - margin) {
+                        doc.addPage();
+                        y = margin;
+                    }
+                    doc.text(textLines, margin, y);
+                    y += (textLines.length * 5) + 3;
+                }
+            }
+            y += 5;
+
+            // Alertas
             if (lastAiData.alertas && lastAiData.alertas.length > 0) {
-                y += 5;
-                doc.setFont('helvetica', 'bold').setFontSize(14).text("Alertas Importantes", margin, y);
+                 if (y > pageHeight - 40) { doc.addPage(); y = margin; }
+                doc.setDrawColor(220, 220, 220).line(margin, y, pageWidth - margin, y);
+                y += 10;
+                doc.setFont('helvetica', 'bold').setFontSize(12).text("Alertas Importantes", margin, y);
                 y += 7;
                 doc.setFont('helvetica', 'normal').setFontSize(10);
                 lastAiData.alertas.forEach(alerta => {
@@ -498,13 +528,15 @@
                 y += 5;
             }
             
+            // Gráficos
+            if (y > pageHeight - 80) { doc.addPage(); y = margin; }
             doc.setDrawColor(220, 220, 220).line(margin, y, pageWidth - margin, y);
             y += 10;
-
+            doc.setFont('helvetica', 'bold').setFontSize(12).text("Análise Visual", margin, y);
+            y+= 5;
             const chartWidth = (pageWidth - margin * 3) / 2;
             const chartHeight = chartWidth * 0.75; 
             const chartIds = lastAiData.graficos.map(g => g.id).filter(id => document.getElementById(id));
-
 
             for (let i = 0; i < chartIds.length; i += 2) {
                 if (y + chartHeight > pageHeight - margin) { doc.addPage(); y = margin; }
@@ -513,35 +545,38 @@
                     const imgData1 = canvas1.toDataURL('image/png', 1.0);
                     doc.addImage(imgData1, 'PNG', margin, y, chartWidth, chartHeight);
                 }
-                
                 if (i + 1 < chartIds.length) {
                     const canvas2 = document.getElementById(chartIds[i + 1]);
                     if (canvas2) {
                         const imgData2 = canvas2.toDataURL('image/png', 1.0);
-                        doc.addImage(imgData2, 'PNG', margin + chartWidth + margin, y, chartWidth, chartHeight);
+                        doc.addImage(imgData2, 'PNG', margin + chartWidth + 10, y, chartWidth, chartHeight);
                     }
                 }
-                y += chartHeight + margin;
+                y += chartHeight + 10;
             }
 
-            if (y > pageHeight - 60) { doc.addPage(); y = margin; }
-            doc.setDrawColor(220, 220, 220).line(margin, y, pageWidth - margin, y);
-            y += 10;
-            
-            await doc.html(document.getElementById('result-content'), {
-                x: margin,
-                y: y,
-                width: pageWidth - (margin * 2),
-                windowWidth: 650,
-                callback: function (doc) {
-                    doc.setFontSize(9).setTextColor(150, 150, 150);
-                    const avisoLines = doc.splitTextToSize(lastAiData.aviso_legal, pageWidth - (margin * 2));
-                    let finalY = doc.lastAutoTable.finalY || y + 50;
-                    if(finalY > pageHeight - 30) { doc.addPage(); finalY = margin; }
-                    doc.text(avisoLines, margin, pageHeight - margin - (avisoLines.length * 4));
-                    doc.save('relatorio-baymax.pdf');
-                }
-            });
+            // Análise Textual (Markdown)
+            const analysisElement = document.getElementById('texto-analise');
+            if (analysisElement) {
+                if (y > pageHeight - 60) { doc.addPage(); y = margin; }
+                doc.setDrawColor(220, 220, 220).line(margin, y, pageWidth - margin, y);
+                y += 10;
+                await doc.html(analysisElement, {
+                    x: margin,
+                    y: y,
+                    width: pageWidth - (margin * 2),
+                    windowWidth: 700 // Aumenta a largura para renderizar melhor o HTML
+                });
+            }
+
+            // Rodapé com Aviso Legal na última página
+            const pageCount = doc.internal.getNumberOfPages();
+            doc.setPage(pageCount);
+            doc.setFontSize(8).setTextColor(150, 150, 150);
+            const avisoLines = doc.splitTextToSize(lastAiData.aviso_legal, pageWidth - (margin * 2));
+            doc.text(avisoLines, margin, pageHeight - margin - (avisoLines.length * 3));
+
+            doc.save(`Relatorio-Baymax-${new Date().toISOString().split('T')[0]}.pdf`);
         });
     });
     </script>
