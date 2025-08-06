@@ -11,6 +11,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 
     <style>
         :root {
@@ -155,6 +157,7 @@
             background-color: var(--bg-secondary);
             border-radius: 16px;
             border: 1px solid var(--border-color);
+            padding: 20px;
         }
 
         .grafico-container h4 {
@@ -162,22 +165,21 @@
             color: var(--text-secondary);
             text-align: center;
             font-size: 16px;
-            padding: 20px 20px 0;
+            padding: 0;
             margin: 0 0 15px 0;
         }
 
         .grafico-canvas-wrapper {
             position: relative;
-            height: 0;
-            padding-bottom: 75%;
+            height: 250px; /* Altura fixa para consistência */
         }
 
         .grafico-container canvas {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100% !important;
+            height: 100% !important;
         }
 
         #texto-analise {
@@ -193,16 +195,13 @@
         .result-actions { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; }
         
         @media (min-width: 768px) {
-            .consultation-content { padding: 32px 48px; }
+            .consultation-content { max-width: 900px; margin: 0 auto; padding: 32px 48px; }
             #graficos-wrapper {
                 flex-direction: row; flex-wrap: wrap; justify-content: space-between;
             }
             .grafico-container {
                 width: calc(50% - 12.5px);
                 flex-grow: 0;
-            }
-            .grafico-canvas-wrapper {
-                padding-bottom: 100%;
             }
             .result-actions { flex-direction: row; justify-content: center; }
             .result-actions .submit-btn { width: auto; padding: 16px 32px; }
@@ -361,7 +360,8 @@
             } catch (error) {
                 console.error('Erro no processo de analise:', error);
                 spinner.classList.remove('visible');
-                document.getElementById('alertas-container').innerHTML = `<p><strong>Ocorreu um erro fatal ao processar os dados.</strong> Tente novamente. Detalhe do erro: ${error.message}</p>`;
+                const alertasContainer = document.getElementById('alertas-container');
+                alertasContainer.innerHTML = `<div class="alerta urgente">Ocorreu um erro fatal ao processar os dados. Tente novamente mais tarde. Detalhe: ${error.message}</div>`;
                 resultWrapper.style.display = 'block';
                 resetButton.style.display = 'inline-block';
             }
@@ -466,6 +466,8 @@
             Object.values(chartInstances).forEach(chart => chart.destroy());
             chartInstances = {};
             document.querySelectorAll('.grafico-container').forEach(c => c.style.display = 'none');
+            resetButton.style.display = 'none';
+            exportPdfButton.style.display = 'none';
         });
         
         // --- FUNÇÃO DE EXPORTAR PDF CORRIGIDA E MELHORADA ---
@@ -476,75 +478,84 @@
             const doc = new jsPDF('p', 'mm', 'a4');
             const margin = 15;
             const pageWidth = doc.internal.pageSize.getWidth();
-            const pageHeight = doc.internal.pageSize.getHeight();
-            let y = margin; // Posição Y atual na página
+            const contentWidth = pageWidth - margin * 2;
+            let y = margin;
 
-            // Título e Data
-            doc.setFont('helvetica', 'bold').setFontSize(18).setTextColor(40, 40, 40);
+            // Função para adicionar cabeçalho de seção
+            const addSectionHeader = (title) => {
+                if (y > doc.internal.pageSize.getHeight() - 40) {
+                    doc.addPage();
+                    y = margin;
+                }
+                doc.setDrawColor(220, 220, 220).line(margin, y, pageWidth - margin, y);
+                y += 10;
+                doc.setFont('helvetica', 'bold').setFontSize(12).setTextColor(40, 40, 40);
+                doc.text(title, margin, y);
+                y += 8;
+                doc.setFont('helvetica', 'normal').setFontSize(10).setTextColor(80, 80, 80);
+            };
+
+            // 1. Título e Data
+            doc.setFont('helvetica', 'bold').setFontSize(18).setTextColor(211, 47, 47);
             doc.text("Relatório de Pré-Análise Baymax", pageWidth / 2, y, { align: "center" });
             y += 8;
             doc.setFont('helvetica', 'normal').setFontSize(10).setTextColor(100, 100, 100);
             doc.text(new Date().toLocaleDateString('pt-BR', { dateStyle: 'full' }), pageWidth / 2, y, { align: 'center' });
             y += 15;
 
-            // Dados do Formulário (NOVO)
-            doc.setFont('helvetica', 'bold').setFontSize(12).setTextColor(40, 40, 40);
-            doc.text("Resumo das Informações Fornecidas", margin, y);
-            y += 7;
-            doc.setFont('helvetica', 'normal').setFontSize(10);
-            
+            // 2. Dados do Formulário
+            addSectionHeader("Informações Fornecidas pelo Paciente");
             const formData = new FormData(consultationForm);
             for (const [key, value] of formData.entries()) {
-                if (value.trim() !== '') {
+                if (value && value.trim() !== '') {
                     const labelElement = document.querySelector(`label[for="${key}"]`);
                     const labelText = labelElement ? labelElement.innerText : key;
                     
-                    const textLines = doc.splitTextToSize(`- ${labelText}: ${value}`, pageWidth - (margin * 2) - 5);
-                    if (y + (textLines.length * 5) > pageHeight - margin) {
-                        doc.addPage();
-                        y = margin;
-                    }
-                    doc.text(textLines, margin, y);
-                    y += (textLines.length * 5) + 3;
+                    doc.setFont('helvetica', 'bold');
+                    const labelLines = doc.splitTextToSize(`${labelText}:`, contentWidth);
+                    if (y + (labelLines.length * 5) > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
+                    doc.text(labelLines, margin, y);
+                    y += (labelLines.length * 5);
+
+                    doc.setFont('helvetica', 'normal');
+                    const valueLines = doc.splitTextToSize(value, contentWidth);
+                    if (y + (valueLines.length * 5) > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
+                    doc.text(valueLines, margin + 2, y);
+                    y += (valueLines.length * 5) + 4;
                 }
             }
-            y += 5;
-
-            // Alertas
+            
+            // 3. Alertas
             if (lastAiData.alertas && lastAiData.alertas.length > 0) {
-                 if (y > pageHeight - 40) { doc.addPage(); y = margin; }
-                doc.setDrawColor(220, 220, 220).line(margin, y, pageWidth - margin, y);
-                y += 10;
-                doc.setFont('helvetica', 'bold').setFontSize(12).text("Alertas Importantes", margin, y);
-                y += 7;
-                doc.setFont('helvetica', 'normal').setFontSize(10);
+                addSectionHeader("Alertas Importantes");
                 lastAiData.alertas.forEach(alerta => {
-                    const alertText = `[${alerta.nivel.toUpperCase()}] ${alerta.texto}`;
-                    const lines = doc.splitTextToSize(alertText, pageWidth - (margin * 2));
-                    if (y + (lines.length * 5) > pageHeight - margin) { doc.addPage(); y = margin; }
+                    const alertColor = alerta.nivel === 'urgente' ? [255, 59, 48] : [255, 149, 0];
+                    doc.setTextColor.apply(null, alertColor);
+                    doc.setFont('helvetica', 'bold');
+                    const text = `[${alerta.nivel.toUpperCase()}] ${alerta.texto}`;
+                    const lines = doc.splitTextToSize(text, contentWidth);
+                    if (y + (lines.length * 5) > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
                     doc.text(lines, margin, y);
                     y += (lines.length * 5) + 3;
                 });
-                y += 5;
+                doc.setTextColor(80, 80, 80); // Reset color
             }
-            
-            // Gráficos
-            if (y > pageHeight - 80) { doc.addPage(); y = margin; }
-            doc.setDrawColor(220, 220, 220).line(margin, y, pageWidth - margin, y);
-            y += 10;
-            doc.setFont('helvetica', 'bold').setFontSize(12).text("Análise Visual", margin, y);
-            y+= 5;
-            const chartWidth = (pageWidth - margin * 3) / 2;
-            const chartHeight = chartWidth * 0.75; 
+
+            // 4. Gráficos
+            addSectionHeader("Análise Visual");
+            const chartWidth = (contentWidth - 10) / 2;
+            const chartHeight = chartWidth * 0.85; 
             const chartIds = lastAiData.graficos.map(g => g.id).filter(id => document.getElementById(id));
 
             for (let i = 0; i < chartIds.length; i += 2) {
-                if (y + chartHeight > pageHeight - margin) { doc.addPage(); y = margin; }
+                if (y + chartHeight > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
+                
                 const canvas1 = document.getElementById(chartIds[i]);
                 if (canvas1) {
                     const imgData1 = canvas1.toDataURL('image/png', 1.0);
                     doc.addImage(imgData1, 'PNG', margin, y, chartWidth, chartHeight);
                 }
+
                 if (i + 1 < chartIds.length) {
                     const canvas2 = document.getElementById(chartIds[i + 1]);
                     if (canvas2) {
@@ -554,27 +565,41 @@
                 }
                 y += chartHeight + 10;
             }
-
-            // Análise Textual (Markdown)
+            
+            // 5. Análise Textual (usando html2canvas)
             const analysisElement = document.getElementById('texto-analise');
             if (analysisElement) {
-                if (y > pageHeight - 60) { doc.addPage(); y = margin; }
-                doc.setDrawColor(220, 220, 220).line(margin, y, pageWidth - margin, y);
-                y += 10;
+                if (y > doc.internal.pageSize.getHeight() - margin - 20) { doc.addPage(); y = margin; }
+                addSectionHeader("Análise Detalhada e Recomendações");
+                
+                // Forçar o tema claro para o PDF ter fundo branco consistente
+                const originalTheme = document.body.className;
+                document.body.className = ''; 
+
                 await doc.html(analysisElement, {
                     x: margin,
                     y: y,
-                    width: pageWidth - (margin * 2),
-                    windowWidth: 700 // Aumenta a largura para renderizar melhor o HTML
+                    width: contentWidth,
+                    windowWidth: 800, // Simula uma janela mais larga para melhor layout
+                    margin: [0,0,0,0],
+                    autoPaging: 'text',
                 });
+                
+                document.body.className = originalTheme; // Restaurar tema original
             }
 
-            // Rodapé com Aviso Legal na última página
+            // 6. Rodapé em todas as páginas
             const pageCount = doc.internal.getNumberOfPages();
-            doc.setPage(pageCount);
-            doc.setFontSize(8).setTextColor(150, 150, 150);
-            const avisoLines = doc.splitTextToSize(lastAiData.aviso_legal, pageWidth - (margin * 2));
-            doc.text(avisoLines, margin, pageHeight - margin - (avisoLines.length * 3));
+            doc.setFont('helvetica', 'italic').setFontSize(8).setTextColor(150, 150, 150);
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.text(
+                    `Página ${i} de ${pageCount} | Relatório Preliminar Baymax`,
+                    pageWidth / 2,
+                    doc.internal.pageSize.getHeight() - 10,
+                    { align: 'center' }
+                );
+            }
 
             doc.save(`Relatorio-Baymax-${new Date().toISOString().split('T')[0]}.pdf`);
         });
