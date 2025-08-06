@@ -6,11 +6,86 @@
     <title>Consulta Rápida - Baymax</title>
     <link rel="stylesheet" href="src/css/main.css">
     <link rel="stylesheet" href="src/css/lembretes.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        /* --- ESTILOS ADICIONAIS E RESPONSIVOS --- */
+        #consultation-form.hidden { display: none; }
+        .ai-result-container { display: none; }
+        .ai-result-container.visible { display: block; }
+        .spinner-container { display: none; }
+        .spinner-container.visible { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 20px 0; color: var(--text-secondary); font-size: 15px; }
+        .spinner { width: 28px; height: 28px; border: 3px solid var(--border-color); border-top-color: var(--accent-color); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Estilos para o texto da análise gerado pelo Markdown */
+        .result-text h3 { margin-top: 0; margin-bottom: 1rem; font-size: 1.2rem; }
+        .result-text ul, .result-text ol { padding-left: 20px; }
+        .result-text li { margin-bottom: 8px; }
+        .result-text strong { font-weight: 600; }
+        
+        /* Layout padrão (Mobile First) */
+        #graficos-wrapper {
+            display: flex;
+            flex-direction: column; /* Gráficos empilhados em telas pequenas */
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+        .grafico-container {
+            width: 100%;
+            text-align: center;
+        }
+        .grafico-container h4 {
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        #texto-analise {
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        .result-actions {
+            display: flex;
+            flex-direction: column; /* Botões empilhados em telas pequenas */
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        /* Adaptação para telas maiores (Tablets e Desktops) */
+        @media (min-width: 768px) {
+            #graficos-wrapper {
+                flex-direction: row; /* Gráficos lado a lado */
+                align-items: flex-start;
+            }
+            .grafico-container {
+                flex: 1; /* Divide o espaço igualmente */
+            }
+            .result-actions {
+                flex-direction: row; /* Botões lado a lado */
+            }
+        }
+
+        /* Área de Depuração */
+        #debug-container {
+            margin-top: 20px; padding: 15px; background-color: #ffebee;
+            border: 1px solid #e57373; border-radius: 8px; color: #333; display: none;
+        }
+        #debug-container h5 { margin-top: 0; color: #c62828; }
+        #debug-output {
+            white-space: pre-wrap; word-wrap: break-word; font-family: monospace;
+            font-size: 12px; background-color: #fff; padding: 10px; border-radius: 4px;
+            border: 1px solid #ffcdd2;
+        }
+    </style>
 </head>
 <body>
     <div class="app-container visible">
         <div id="consultation-screen" class="screen active">
-
             <header class="chat-header">
                 <a href="index.html" class="back-button" aria-label="Voltar para Home">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -24,11 +99,10 @@
 
             <main class="consultation-content">
                 <form id="consultation-form">
-                    <div class="form-group">
+                     <div class="form-group">
                         <label for="idade">Idade</label>
                         <input type="number" id="idade" name="idade" placeholder="Ex: 30" required>
                     </div>
-
                     <div class="form-group">
                         <label for="sexo">Sexo</label>
                         <select id="sexo" name="sexo" required>
@@ -38,42 +112,34 @@
                             <option value="outro">Outro</option>
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label for="comorbidades">Tem comorbidades (doenças crônicas)? Se sim, quais?</label>
-                        <textarea id="comorbidades" name="comorbidades" rows="3" placeholder="Ex: Diabetes tipo 2, Hipertensão"></textarea>
+                        <textarea id="comorbidades" name="comorbidades" rows="3" placeholder="Ex: Diabetes tipo 2, Hipertensão. Se não tiver, deixe em branco."></textarea>
                     </div>
-
                     <div class="form-group">
                         <label for="medicamentos">Toma algum medicamento de uso contínuo? Se sim, quais?</label>
-                        <textarea id="medicamentos" name="medicamentos" rows="3" placeholder="Ex: Metformina 500mg, Losartana 50mg"></textarea>
+                        <textarea id="medicamentos" name="medicamentos" rows="3" placeholder="Ex: Metformina 500mg, Losartana 50mg. Se não tomar, deixe em branco."></textarea>
                     </div>
-
                     <div class="form-group">
                         <label for="cirurgias">Já fez alguma cirurgia? Se sim, qual?</label>
-                        <textarea id="cirurgias" name="cirurgias" rows="2" placeholder="Ex: Apendicectomia em 2015"></textarea>
+                        <textarea id="cirurgias" name="cirurgias" rows="2" placeholder="Ex: Apendicectomia em 2015. Se não fez, deixe em branco."></textarea>
                     </div>
-
                     <div class="form-group">
                         <label for="drogas">Faz uso de alguma droga lícita ou ilícita (álcool, tabaco, etc.)?</label>
-                        <textarea id="drogas" name="drogas" rows="2" placeholder="Ex: Consumo álcool socialmente, não fumo"></textarea>
+                        <textarea id="drogas" name="drogas" rows="2" placeholder="Ex: Consumo álcool socialmente, não fumo."></textarea>
                     </div>
-
                     <div class="form-group">
                         <label for="familiares">Algum familiar de primeiro grau tem doença crônica?</label>
-                        <textarea id="familiares" name="familiares" rows="3" placeholder="Ex: Mãe com hipertensão, Pai com colesterol alto"></textarea>
+                        <textarea id="familiares" name="familiares" rows="3" placeholder="Ex: Mãe com hipertensão, Pai com colesterol alto."></textarea>
                     </div>
-
                     <div class="form-group">
                         <label for="sintomas">Quais sintomas você está sentindo?</label>
                         <textarea id="sintomas" name="sintomas" rows="4" placeholder="Descreva seus sintomas gerais aqui..." required></textarea>
                     </div>
-
                     <div class="form-group">
                         <label for="frequencia">Com qual frequência sente esses sintomas?</label>
                         <input type="text" id="frequencia" name="frequencia" placeholder="Ex: Diariamente, 3 vezes por semana" required>
                     </div>
-
                     <div class="form-group">
                         <label for="intensidade">Qual a intensidade desses sintomas?</label>
                         <select id="intensidade" name="intensidade" required>
@@ -83,60 +149,239 @@
                             <option value="intensa">Intensa</option>
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label for="melhora-piora">Fez algo que melhorou ou piorou os sintomas?</label>
                         <textarea id="melhora-piora" name="melhora-piora" rows="3" placeholder="Ex: Piora ao deitar, melhora com bolsa de água quente"></textarea>
                     </div>
-
                     <button type="submit" class="submit-btn">Analisar e Obter Resultado</button>
                 </form>
 
-                <div id="ai-result" class="ai-result-container hidden">
-                    <h3>Resultado da Análise</h3>
-                    <div class="spinner-container">
+                <div id="ai-result" class="ai-result-container">
+                    <div id="spinner" class="spinner-container">
                         <div class="spinner"></div>
                         <p>Baymax está analisando suas respostas...</p>
                     </div>
-                    <div id="result-content" class="result-text"></div>
+                    <div id="result-wrapper" style="display: none;">
+                        <h3>Análise Visual</h3>
+                        <div id="graficos-wrapper">
+                            <div id="graficoProbabilidade-container" class="grafico-container" style="display: none;">
+                                <h4></h4>
+                                <canvas id="graficoProbabilidade"></canvas>
+                            </div>
+                            <div id="graficoUrgencia-container" class="grafico-container" style="display: none;">
+                                <h4></h4>
+                                <canvas id="graficoUrgencia"></canvas>
+                            </div>
+                        </div>
+                        <div id="texto-analise">
+                             <div id="result-content" class="result-text"></div>
+                        </div>
+                        <div class="result-actions">
+                             <button id="export-pdf-btn" class="submit-btn" style="display: none; background-color: #555;">Exportar Relatório</button>
+                             <button id="reset-btn" class="submit-btn" style="display: none;">Nova Consulta</button>
+                        </div>
+                        <div id="debug-container">
+                            <h5>Falha ao processar a análise</h5>
+                            <p>A resposta da IA não veio no formato JSON esperado. Isso pode ser um problema temporário. Por favor, tente novamente. Se o erro persistir, o conteúdo abaixo pode ajudar no suporte técnico.</p>
+                            <pre id="debug-output"></pre>
+                        </div>
+                    </div>
                 </div>
             </main>
         </div>
     </div>
-    <script src="src/js/theme.js"></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const themeToggleButton = document.getElementById('theme-toggle-btn');
             const body = document.body;
+            if (themeToggleButton) {
+                const applyTheme = (theme) => body.classList.toggle('dark-mode', theme === 'dark');
+                themeToggleButton.addEventListener('click', () => {
+                    const newTheme = body.classList.contains('dark-mode') ? 'light' : 'dark';
+                    applyTheme(newTheme);
+                    localStorage.setItem('theme', newTheme);
+                });
+                const savedTheme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (savedTheme) { applyTheme(savedTheme); }
+                else if (prefersDark) { applyTheme('dark'); }
+            }
 
-            // Função para aplicar um tema ('light' ou 'dark')
-            const applyTheme = (theme) => {
-                if (theme === 'dark') {
-                    body.classList.add('dark-mode');
-                } else {
-                    body.classList.remove('dark-mode');
+            const consultationForm = document.getElementById('consultation-form');
+            const aiResultContainer = document.getElementById('ai-result');
+            const spinner = document.getElementById('spinner');
+            const resultWrapper = document.getElementById('result-wrapper');
+            const resultContent = document.getElementById('result-content');
+            const resetButton = document.getElementById('reset-btn');
+            const exportPdfButton = document.getElementById('export-pdf-btn');
+            const debugContainer = document.getElementById('debug-container');
+            const debugOutput = document.getElementById('debug-output');
+            let chartInstances = {};
+
+            consultationForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const formData = new FormData(consultationForm);
+                const data = Object.fromEntries(formData.entries());
+
+                consultationForm.classList.add('hidden');
+                aiResultContainer.classList.add('visible');
+                spinner.classList.add('visible');
+                resultWrapper.style.display = 'none';
+                debugContainer.style.display = 'none';
+
+                let prompt = "Você é um assistente de pré-análise médica chamado Baymax. Sua tarefa é analisar os dados do paciente e gerar uma resposta estruturada em JSON.\n\n";
+                prompt += "PRIMEIRO, realize uma análise textual detalhada em português do Brasil e em formato Markdown. A análise DEVE conter as seguintes seções obrigatórias com conteúdo relevante e bem explicado:\n";
+                prompt += "### Resumo do Caso\n(Descreva brevemente o perfil e os sintomas principais do paciente.)\n\n";
+                prompt += "### Possíveis Hipóteses Preliminares\n(Liste de 2 a 3 possíveis causas para os sintomas, explicando cada uma de forma simples e clara. Evite linguagem excessivamente técnica.)\n\n";
+                prompt += "### Recomendações e Próximos Passos\n(Sugira ações como hidratação, repouso, e qual tipo de especialista procurar, como Clínico Geral, Neurologista, etc. Seja específico.)\n\n";
+                prompt += "SEGUNDO, com base na sua análise, gere os dados para os gráficos.\n\n";
+                prompt += "TERCEIRO, e mais importante: sua resposta final DEVE SER ESTRITAMENTE um único objeto JSON válido, sem nenhum texto, explicação ou acentos graves de formatação antes ou depois. Use a análise que você escreveu e os dados dos gráficos para preencher o seguinte modelo:\n";
+                prompt += '{\n';
+                prompt += '  "analise_texto": "COLE AQUI A ANÁLISE COMPLETA EM MARKDOWN QUE VOCÊ CRIOU.",\n';
+                prompt += '  "aviso_legal": "Lembre-se que esta é uma análise preliminar baseada em inteligência artificial e não substitui, em nenhuma hipótese, uma consulta e um diagnóstico médico profissional. Procure um médico para uma avaliação completa.",\n';
+                prompt += '  "graficos": [\n';
+                prompt += '    {\n';
+                prompt += '      "id": "graficoProbabilidade",\n';
+                prompt += '      "tipo": "doughnut",\n';
+                prompt += '      "titulo": "Probabilidade Relativa das Hipóteses",\n';
+                prompt += '      "dados": { "labels": ["(Hipótese A)", "(Hipótese B)", "Outras"], "valores": [60, 30, 10] }\n';
+                prompt += '    },\n';
+                prompt += '    {\n';
+                prompt += '      "id": "graficoUrgencia",\n';
+                prompt += '      "tipo": "gauge",\n';
+                prompt += '      "titulo": "Nível de Urgência Recomendado",\n';
+                prompt += '      "dados": { "valor": 75, "nivel": "Moderado" }\n';
+                prompt += '    }\n';
+                prompt += '  ]\n';
+                prompt += '}';
+
+                try {
+                    const response = await fetch('https://chat-bot-bia-api.onrender.com/send-msg', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ history: [], newMessage: prompt })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Erro de comunicação com a API: ' + response.statusText);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    let aiData;
+                    try {
+                        aiData = JSON.parse(result.msg);
+                    } catch (e) {
+                        console.error("Erro ao interpretar a resposta da IA. Resposta recebida:", result.msg);
+                        debugOutput.textContent = result.msg;
+                        debugContainer.style.display = 'block';
+                        throw new Error("A IA retornou uma resposta em formato inválido.");
+                    }
+                   
+                    const textoCompleto = marked.parse((aiData.analise_texto || "Nenhuma análise textual foi retornada.") + "\n\n**Aviso Importante:**\n" + (aiData.aviso_legal || ""));
+                    resultContent.innerHTML = textoCompleto;
+
+                    Object.values(chartInstances).forEach(chart => chart.destroy());
+                    chartInstances = {};
+                    document.querySelectorAll('.grafico-container').forEach(c => c.style.display = 'none');
+
+                    if (aiData.graficos && Array.isArray(aiData.graficos)) {
+                        aiData.graficos.forEach(grafico => {
+                            if (!grafico || !grafico.id || !grafico.dados) {
+                                console.warn("Objeto de gráfico malformado recebido da IA:", grafico);
+                                return;
+                            }
+                            const container = document.getElementById(grafico.id + '-container');
+                            if (container) {
+                                const canvas = document.getElementById(grafico.id);
+                                const titulo = container.querySelector('h4');
+                                container.style.display = 'block';
+                                titulo.innerText = grafico.titulo;
+
+                                if (grafico.tipo === 'doughnut' && grafico.dados.labels && grafico.dados.valores) {
+                                    chartInstances[grafico.id] = new Chart(canvas, {
+                                        type: 'doughnut',
+                                        data: {
+                                            labels: grafico.dados.labels,
+                                            datasets: [{ data: grafico.dados.valores, backgroundColor: ['rgba(255, 99, 132, 0.8)', 'rgba(54, 162, 235, 0.8)', 'rgba(255, 206, 86, 0.8)'], borderColor: 'var(--bg-primary)', borderWidth: 3 }]
+                                        },
+                                        options: { responsive: true, aspectRatio: 1.5, plugins: { legend: { position: 'top' } } }
+                                    });
+                                } else if (grafico.tipo === 'gauge' && grafico.dados.valor !== undefined && grafico.dados.nivel) {
+                                    const valor = grafico.dados.valor;
+                                    const cor = valor > 70 ? 'rgba(255, 99, 132, 0.8)' : valor > 40 ? 'rgba(255, 206, 86, 0.8)' : 'rgba(75, 192, 192, 0.8)';
+                                    titulo.innerText = grafico.titulo + ': ' + grafico.dados.nivel;
+                                    chartInstances[grafico.id] = new Chart(canvas, {
+                                        type: 'doughnut',
+                                        data: {
+                                            datasets: [{ data: [valor, 100 - valor], backgroundColor: [cor, 'rgba(211, 211, 211, 0.3)'], borderColor: 'var(--bg-primary)', borderWidth: 3, circumference: 180, rotation: 270 }]
+                                        },
+                                        options: { responsive: true, aspectRatio: 2, plugins: { legend: { display: false }, tooltip: { enabled: false } }, cutout: '60%' }
+                                    });
+                                }
+                            }
+                        });
+                    }
+
+                    spinner.classList.remove('visible');
+                    resultWrapper.style.display = 'block';
+                    resetButton.style.display = 'inline-block';
+                    exportPdfButton.style.display = 'inline-block';
+
+                } catch (error) {
+                    console.error('Erro no processo de analise:', error);
+                    spinner.classList.remove('visible');
+                    resultWrapper.style.display = 'block';
+                    if (debugContainer.style.display !== 'block') {
+                        resultContent.innerHTML = '<p><strong>Ocorreu um erro no processo de analise.</strong></p><p><i>' + error.message + '</i></p>';
+                    }
+                    resetButton.style.display = 'inline-block';
                 }
-            };
-
-            // Evento de clique no botão para alternar o tema
-            themeToggleButton.addEventListener('click', () => {
-                const isDarkMode = body.classList.contains('dark-mode');
-                const newTheme = isDarkMode ? 'light' : 'dark';
-                applyTheme(newTheme);
-                // Salva a preferência do usuário no navegador
-                localStorage.setItem('theme', newTheme);
             });
 
-            // Verifica o tema salvo ou a preferência do sistema ao carregar a página
-            const savedTheme = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            exportPdfButton.addEventListener('click', () => {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
+                let y = 15;
 
-            if (savedTheme) {
-                applyTheme(savedTheme); // Usa o tema que o usuário escolheu antes
-            } else if (prefersDark) {
-                applyTheme('dark'); // Se for a primeira visita e o sistema for escuro, usa o modo escuro
-            }
+                doc.setFontSize(18);
+                doc.text("Relatorio de Pre-Analise - Baymax", 105, y, { align: "center" });
+                y += 10;
+                
+                const canvas1Container = document.getElementById('graficoProbabilidade-container');
+                const canvas2Container = document.getElementById('graficoUrgencia-container');
+                
+                if (canvas1Container.style.display !== 'none' && canvas2Container.style.display !== 'none') {
+                    const canvas1 = document.getElementById('graficoProbabilidade');
+                    const canvas2 = document.getElementById('graficoUrgencia');
+                    const img1 = canvas1.toDataURL('image/png', 1.0);
+                    const img2 = canvas2.toDataURL('image/png', 1.0);
+                    doc.addImage(img1, 'PNG', 15, y, 85, 0); // Altura automática
+                    doc.addImage(img2, 'PNG', 110, y, 85, 0); // Altura automática
+                    y += 95; // Aumenta o espaço vertical para os gráficos
+                }
+
+                doc.setFontSize(12);
+                // Usamos o innerHTML para tentar preservar a formatação para o PDF
+                const source = document.getElementById('result-content');
+                doc.html(source, {
+                    callback: function(doc) {
+                        doc.save('relatorio-baymax.pdf');
+                    },
+                    x: 15,
+                    y: y,
+                    width: 180,
+                    windowWidth: 650
+                });
+            });
+
+            resetButton.addEventListener('click', () => {
+                aiResultContainer.classList.remove('visible');
+                consultationForm.classList.remove('hidden');
+                consultationForm.reset();
+            });
         });
     </script>
-    </body>
+</body>
 </html>
