@@ -51,26 +51,30 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        #consultation-screen {
-            display: flex; flex-direction: column; position: fixed;
+        .screen {
+            display: none;
+            flex-direction: column;
+            position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             background-color: var(--bg-primary);
         }
+        .screen.active { display: flex; }
 
-        .consultation-content {
+        .content-wrapper {
             flex-grow: 1; overflow-y: auto;
             padding: 16px 24px 32px 24px;
             -webkit-overflow-scrolling: touch;
         }
 
-        .chat-header {
+        .main-header {
             display: flex; align-items: center; padding: 12px 16px;
             border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
         }
 
-        .chat-title { margin: 0; font-size: 1.2rem; font-weight: 600; text-align: center; flex-grow: 1; }
+        .header-title { margin: 0; font-size: 1.2rem; font-weight: 600; text-align: center; flex-grow: 1; }
 
-        .back-button, .theme-toggle {
+        .header-btn {
             background: none; border: none; padding: 8px; cursor: pointer;
             color: var(--accent-color); display: flex; align-items: center; justify-content: center;
         }
@@ -107,13 +111,14 @@
         }
         .submit-btn:hover { opacity: 0.9; }
         .submit-btn:active { transform: scale(0.98); }
+        .submit-btn.secondary { background-color: #8e8e93; }
 
         #consultation-form.hidden { display: none; }
-        .ai-result-container.visible { display: block; }
+        #ai-result.hidden { display: none; }
 
         .spinner-container {
-            display: none; flex-direction: column; align-items: center; gap: 12px;
-            padding: 40px 0; color: var(--text-secondary);
+            display: none; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+            padding: 40px 0; color: var(--text-secondary); min-height: 400px;
         }
         .spinner-container.visible { display: flex; }
         .spinner {
@@ -123,61 +128,32 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        #alertas-container h3 {
-            font-size: 1.2rem; margin-bottom: 16px; color: var(--text-primary);
-        }
-        .alertas-wrapper {
-            display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px;
-        }
+        #alertas-container h3 { font-size: 1.2rem; margin-bottom: 16px; color: var(--text-primary); }
+        .alertas-wrapper { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
         .alerta {
             padding: 15px; border-radius: 12px; display: flex;
             align-items: flex-start; gap: 12px; border: 1px solid;
             font-size: 15px; line-height: 1.5;
         }
         .alerta .alerta-icon { flex-shrink: 0; margin-top: 2px; }
-        .alerta.atencao {
-            background-color: rgba(255, 149, 0, 0.1); border-color: var(--color-atencao);
-        }
-        .alerta.urgente {
-            background-color: rgba(255, 59, 48, 0.1); border-color: var(--color-urgente);
-        }
+        .alerta.atencao { background-color: rgba(255, 149, 0, 0.1); border-color: var(--color-atencao); }
+        .alerta.urgente { background-color: rgba(255, 59, 48, 0.1); border-color: var(--color-urgente); }
         body.dark-mode .alerta { color: #f0f0f0; }
 
         #result-wrapper h3 { font-size: 1.2rem; color: var(--text-primary); }
-        #graficos-wrapper {
-            display: flex; flex-direction: column;
-            gap: 25px; margin-bottom: 25px;
-        }
-        
+        #graficos-wrapper { display: flex; flex-direction: column; gap: 25px; margin-bottom: 25px; }
         .grafico-container {
-            position: relative;
-            width: 100%;
-            background-color: var(--bg-secondary);
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            padding: 20px;
+            position: relative; width: 100%; background-color: var(--bg-secondary);
+            border-radius: 16px; border: 1px solid var(--border-color); padding: 20px;
         }
-
         .grafico-container h4 {
-            font-weight: 500;
-            color: var(--text-secondary);
-            text-align: center;
-            font-size: 16px;
-            padding: 0;
-            margin: 0 0 15px 0;
+            font-weight: 500; color: var(--text-secondary); text-align: center;
+            font-size: 16px; padding: 0; margin: 0 0 15px 0;
         }
-
-        .grafico-canvas-wrapper {
-            position: relative;
-            height: 250px; /* Altura fixa para consistência */
-        }
-
+        .grafico-canvas-wrapper { position: relative; height: 250px; }
         .grafico-container canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100% !important;
-            height: 100% !important;
+            position: absolute; top: 0; left: 0;
+            width: 100% !important; height: 100% !important;
         }
 
         #texto-analise {
@@ -192,15 +168,44 @@
 
         .result-actions { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; }
         
+        /* History Screen Styles */
+        #history-list { list-style: none; padding: 0; margin: 0; }
+        .history-item {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .history-item:hover { background-color: var(--border-color); }
+        .history-item-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0 0 6px 0;
+            font-size: 1rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .history-item-date {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        #no-history {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 50px 20px;
+        }
+        .history-header-actions {
+            display: flex; justify-content: flex-end; padding: 0 16px 16px;
+        }
+
         @media (min-width: 768px) {
-            .consultation-content { max-width: 900px; margin: 0 auto; padding: 32px 48px; }
-            #graficos-wrapper {
-                flex-direction: row; flex-wrap: wrap; justify-content: space-between;
-            }
-            .grafico-container {
-                width: calc(50% - 12.5px);
-                flex-grow: 0;
-            }
+            .content-wrapper { max-width: 900px; margin: 0 auto; padding: 32px 48px; }
+            #graficos-wrapper { flex-direction: row; flex-wrap: wrap; justify-content: space-between; }
+            .grafico-container { width: calc(50% - 12.5px); flex-grow: 0; }
             .result-actions { flex-direction: row; justify-content: center; }
             .result-actions .submit-btn { width: auto; padding: 16px 32px; }
         }
@@ -208,132 +213,252 @@
 </head>
 
 <body>
-    <div class="app-container visible">
-        <div id="consultation-screen" class="screen active">
-            <header class="chat-header">
-                <a href="index.html" class="back-button" aria-label="Voltar para Home"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
-                <h2 class="chat-title">Consulta Rápida</h2>
-                <button id="theme-toggle-btn" class="theme-toggle" aria-label="Mudar tema">
+    <div id="consultation-screen" class="screen active">
+        <header class="main-header">
+            <button id="back-to-form-btn" class="header-btn" aria-label="Voltar" style="visibility: hidden;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <h2 id="header-title" class="header-title">Consulta Rápida</h2>
+            <div style="display: flex; gap: 8px;">
+                <button id="history-btn" class="header-btn" aria-label="Ver Histórico">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"></path><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                </button>
+                <button id="theme-toggle-btn" class="header-btn theme-toggle" aria-label="Mudar tema">
                     <svg class="sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
                     <svg class="moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                 </button>
-            </header>
+            </div>
+        </header>
 
-            <main class="consultation-content">
-                <form id="consultation-form">
-                    <div class="form-group"><label for="idade">Idade</label><input type="number" id="idade" name="idade" placeholder="Ex: 30" required></div>
-                    <div class="form-group"><label for="sexo">Sexo</label><select id="sexo" name="sexo" required><option value="" disabled selected>Selecione...</option><option value="masculino">Masculino</option><option value="feminino">Feminino</option><option value="outro">Outro</option></select></div>
-                    <div class="form-group"><label for="comorbidades">Tem comorbidades (doenças crônicas)? Se sim, quais?</label><textarea id="comorbidades" name="comorbidades" rows="3" placeholder="Ex: Diabetes tipo 2, Hipertensão. Se não tiver, deixe em branco."></textarea></div>
-                    <div class="form-group"><label for="medicamentos">Toma algum medicamento de uso contínuo?</label><textarea id="medicamentos" name="medicamentos" rows="3" placeholder="Ex: Metformina 500mg. Se não tomar, deixe em branco."></textarea></div>
-                    <div class="form-group"><label for="familiares">Algum familiar de primeiro grau tem doença crônica?</label><textarea id="familiares" name="familiares" rows="3" placeholder="Ex: Mãe com hipertensão, Pai com colesterol alto."></textarea></div>
-                    
-                    <div class="form-group">
-                        <label for="drogas">Faz uso de alguma droga lícita ou ilícita (álcool, tabaco, etc.)?</label>
-                        <textarea id="drogas" name="drogas" rows="3" placeholder="Ex: Fumo 10 cigarros por dia. Se não, deixe em branco."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="cirurgias">Já fez alguma cirurgia? Se sim, qual?</label>
-                        <textarea id="cirurgias" name="cirurgias" rows="3" placeholder="Ex: Cirurgia de apêndice em 2015. Se não, deixe em branco."></textarea>
-                    </div>
-                    
-                    <div class="form-group"><label for="sintomas">Quais sintomas você está sentindo?</label><textarea id="sintomas" name="sintomas" rows="4" placeholder="Descreva seus sintomas gerais aqui..." required></textarea></div>
-                    <div class="form-group"><label for="frequencia">Com qual frequência sente esses sintomas?</label><input type="text" id="frequencia" name="frequencia" placeholder="Ex: Diariamente, 3 vezes por semana" required></div>
-                    <div class="form-group"><label for="intensidade">Qual a intensidade desses sintomas?</label><select id="intensidade" name="intensidade" required><option value="" disabled selected>Selecione a intensidade...</option><option value="leve">Leve</option><option value="moderada">Moderada</option><option value="intensa">Intensa</option></select></div>
-                    <div class="form-group"><label for="melhora-piora">Fez algo que melhorou ou piorou os sintomas?</label><textarea id="melhora-piora" name="melhora-piora" rows="3" placeholder="Ex: Piora ao deitar, melhora com bolsa de água quente"></textarea></div>
-                    <button type="submit" class="submit-btn">Analisar e Obter Resultado</button>
-                </form>
+        <main class="content-wrapper">
+            <form id="consultation-form">
+                <div class="form-group"><label for="idade">Idade</label><input type="number" id="idade" name="idade" placeholder="Ex: 30" required></div>
+                <div class="form-group"><label for="sexo">Sexo</label><select id="sexo" name="sexo" required><option value="" disabled selected>Selecione...</option><option value="masculino">Masculino</option><option value="feminino">Feminino</option><option value="outro">Outro</option></select></div>
+                <div class="form-group"><label for="comorbidades">Tem comorbidades (doenças crônicas)? Se sim, quais?</label><textarea id="comorbidades" name="comorbidades" rows="3" placeholder="Ex: Diabetes tipo 2, Hipertensão. Se não tiver, deixe em branco."></textarea></div>
+                <div class="form-group"><label for="medicamentos">Toma algum medicamento de uso contínuo?</label><textarea id="medicamentos" name="medicamentos" rows="3" placeholder="Ex: Metformina 500mg. Se não tomar, deixe em branco."></textarea></div>
+                <div class="form-group"><label for="familiares">Algum familiar de primeiro grau tem doença crônica?</label><textarea id="familiares" name="familiares" rows="3" placeholder="Ex: Mãe com hipertensão, Pai com colesterol alto."></textarea></div>
+                <div class="form-group"><label for="drogas">Faz uso de alguma droga lícita ou ilícita (álcool, tabaco, etc.)?</label><textarea id="drogas" name="drogas" rows="3" placeholder="Ex: Fumo 10 cigarros por dia. Se não, deixe em branco."></textarea></div>
+                <div class="form-group"><label for="cirurgias">Já fez alguma cirurgia? Se sim, qual?</label><textarea id="cirurgias" name="cirurgias" rows="3" placeholder="Ex: Cirurgia de apêndice em 2015. Se não, deixe em branco."></textarea></div>
+                <div class="form-group"><label for="sintomas">Quais sintomas você está sentindo?</label><textarea id="sintomas" name="sintomas" rows="4" placeholder="Descreva seus sintomas gerais aqui..." required></textarea></div>
+                <div class="form-group"><label for="frequencia">Com qual frequência sente esses sintomas?</label><input type="text" id="frequencia" name="frequencia" placeholder="Ex: Diariamente, 3 vezes por semana" required></div>
+                <div class="form-group"><label for="intensidade">Qual a intensidade desses sintomas?</label><select id="intensidade" name="intensidade" required><option value="" disabled selected>Selecione a intensidade...</option><option value="leve">Leve</option><option value="moderada">Moderada</option><option value="intensa">Intensa</option></select></div>
+                <div class="form-group"><label for="melhora-piora">Fez algo que melhorou ou piorou os sintomas?</label><textarea id="melhora-piora" name="melhora-piora" rows="3" placeholder="Ex: Piora ao deitar, melhora com bolsa de água quente"></textarea></div>
+                <button type="submit" class="submit-btn">Analisar e Obter Resultado</button>
+            </form>
 
-                <div id="ai-result" class="ai-result-container">
-                    <div id="spinner" class="spinner-container">
-                        <div class="spinner"></div><p>Baymax está analisando suas respostas...</p>
+            <div id="ai-result" class="hidden">
+                <div id="spinner" class="spinner-container">
+                    <div class="spinner"></div><p>Baymax está analisando suas respostas...</p>
+                </div>
+                <div id="result-wrapper" style="display: none;">
+                    <div id="alertas-container"></div>
+                    <h3>Análise Visual</h3>
+                    <div id="graficos-wrapper">
+                        <div id="graficoHipoteses-container" class="grafico-container" style="display: none;"><h4></h4><div class="grafico-canvas-wrapper"><canvas id="graficoHipoteses"></canvas></div></div>
+                        <div id="graficoNivelUrgencia-container" class="grafico-container" style="display: none;"><h4></h4><div class="grafico-canvas-wrapper"><canvas id="graficoNivelUrgencia"></canvas></div></div>
+                        <div id="graficoFatoresRisco-container" class="grafico-container" style="display: none;"><h4></h4><div class="grafico-canvas-wrapper"><canvas id="graficoFatoresRisco"></canvas></div></div>
+                        <div id="graficoPerfilSintomas-container" class="grafico-container" style="display: none;"><h4></h4><div class="grafico-canvas-wrapper"><canvas id="graficoPerfilSintomas"></canvas></div></div>
+                        <div id="graficoEspecialistas-container" class="grafico-container" style="display: none;"><h4></h4><div class="grafico-canvas-wrapper"><canvas id="graficoEspecialistas"></canvas></div></div>
                     </div>
-                    <div id="result-wrapper" style="display: none;">
-                        <div id="alertas-container"></div>
-                        <h3>Análise Visual</h3>
-                        <div id="graficos-wrapper">
-                            <div id="graficoHipoteses-container" class="grafico-container" style="display: none;">
-                                <h4></h4>
-                                <div class="grafico-canvas-wrapper"><canvas id="graficoHipoteses"></canvas></div>
-                            </div>
-                            <div id="graficoNivelUrgencia-container" class="grafico-container" style="display: none;">
-                                <h4></h4>
-                                <div class="grafico-canvas-wrapper"><canvas id="graficoNivelUrgencia"></canvas></div>
-                            </div>
-                            <div id="graficoFatoresRisco-container" class="grafico-container" style="display: none;">
-                                <h4></h4>
-                                <div class="grafico-canvas-wrapper"><canvas id="graficoFatoresRisco"></canvas></div>
-                            </div>
-                            <div id="graficoPerfilSintomas-container" class="grafico-container" style="display: none;">
-                                <h4></h4>
-                                <div class="grafico-canvas-wrapper"><canvas id="graficoPerfilSintomas"></canvas></div>
-                            </div>
-                            <div id="graficoEspecialistas-container" class="grafico-container" style="display: none;">
-                                <h4></h4>
-                                <div class="grafico-canvas-wrapper"><canvas id="graficoEspecialistas"></canvas></div>
-                            </div>
-                        </div>
-                        <div id="texto-analise"><div id="result-content" class="result-text"></div></div>
-                        <div class="result-actions">
-                            <button id="export-pdf-btn" class="submit-btn" style="display: none; background-color: #555;">Exportar Relatório</button>
-                            <button id="reset-btn" class="submit-btn" style="display: none;">Nova Consulta</button>
-                        </div>
+                    <div id="texto-analise"><div id="result-content" class="result-text"></div></div>
+                    <div class="result-actions">
+                        <button id="export-pdf-btn" class="submit-btn" style="background-color: #555;">Exportar Relatório</button>
+                        <button id="reset-btn" class="submit-btn">Nova Consulta</button>
                     </div>
                 </div>
-            </main>
+            </div>
+        </main>
+    </div>
+
+    <div id="history-screen" class="screen">
+        <header class="main-header">
+             <button id="back-to-main-btn" class="header-btn" aria-label="Voltar">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <h2 class="header-title">Histórico de Consultas</h2>
+            <div style="width: 44px;"></div> </header>
+        <div class="history-header-actions">
+             <button id="clear-history-btn" class="submit-btn secondary" style="width: auto; padding: 8px 16px; font-size: 14px; margin: 0;">Limpar Histórico</button>
         </div>
+        <main class="content-wrapper" style="padding-top: 0;">
+            <ul id="history-list"></ul>
+            <div id="no-history" style="display: none;">
+                <h3>Nenhum histórico encontrado</h3>
+                <p>Suas consultas rápidas aparecerão aqui.</p>
+            </div>
+        </main>
     </div>
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const themeToggleButton = document.getElementById('theme-toggle-btn');
-        const body = document.body;
-        let lastAiData = null; 
-
-        if (themeToggleButton) {
-            const applyTheme = (theme) => body.classList.toggle('dark-mode', theme === 'dark');
-            themeToggleButton.addEventListener('click', () => {
-                const newTheme = body.classList.contains('dark-mode') ? 'light' : 'dark';
-                applyTheme(newTheme);
-                localStorage.setItem('theme', newTheme);
-                if (lastAiData) {
-                    renderCharts(lastAiData.graficos);
-                }
-            });
-            const savedTheme = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (savedTheme) { applyTheme(savedTheme); }
-            else if (prefersDark) { applyTheme('dark'); }
-        }
-
+        // --- DOM ELEMENTS ---
+        const consultationScreen = document.getElementById('consultation-screen');
+        const historyScreen = document.getElementById('history-screen');
         const consultationForm = document.getElementById('consultation-form');
         const aiResultContainer = document.getElementById('ai-result');
         const spinner = document.getElementById('spinner');
         const resultWrapper = document.getElementById('result-wrapper');
+        const headerTitle = document.getElementById('header-title');
+        
+        // Buttons
+        const themeToggleButton = document.getElementById('theme-toggle-btn');
+        const historyBtn = document.getElementById('history-btn');
+        const backToMainBtn = document.getElementById('back-to-main-btn');
+        const backToFormBtn = document.getElementById('back-to-form-btn');
         const resetButton = document.getElementById('reset-btn');
         const exportPdfButton = document.getElementById('export-pdf-btn');
-        let chartInstances = {};
-        
-        const gaugeTextPlugin = { id: 'gaugeText', beforeDraw(chart) { const { ctx, data } = chart; if (!data.datasets[0].gaugeData) return; const { text, fontColor } = data.datasets[0].gaugeData; const { width, height } = chart; ctx.save(); ctx.font = `600 1.2rem ${Chart.defaults.font.family}`; ctx.fillStyle = fontColor; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, width / 2, height / 2 + (height * 0.15)); ctx.restore(); } };
-        Chart.register(gaugeTextPlugin);
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
 
+        // History Elements
+        const historyList = document.getElementById('history-list');
+        const noHistoryMsg = document.getElementById('no-history');
+        
+        // --- STATE & DATA ---
+        let currentConsultation = null;
+        let chartInstances = {};
+
+        // --- THEME MANAGEMENT ---
+        const applyTheme = (theme) => {
+            document.body.classList.toggle('dark-mode', theme === 'dark');
+            if (currentConsultation) { // Re-render charts with new theme colors
+                renderCharts(currentConsultation.aiData.graficos);
+            }
+        };
+
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
+
+        themeToggleButton.addEventListener('click', () => {
+            const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+            localStorage.setItem('theme', newTheme);
+            applyTheme(newTheme);
+        });
+
+        // --- NAVIGATION & VIEW MANAGEMENT ---
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function showViewInConsultationScreen(view) { // 'form' or 'result'
+            consultationForm.classList.toggle('hidden', view !== 'form');
+            aiResultContainer.classList.toggle('hidden', view !== 'result');
+            headerTitle.innerText = view === 'result' ? 'Resultado da Análise' : 'Consulta Rápida';
+            backToFormBtn.style.visibility = view === 'result' ? 'visible' : 'hidden';
+            historyBtn.style.display = view === 'form' ? 'flex' : 'none';
+        }
+
+        historyBtn.addEventListener('click', () => {
+            renderHistoryList();
+            showScreen('history-screen');
+        });
+        
+        backToMainBtn.addEventListener('click', () => showScreen('consultation-screen'));
+        backToFormBtn.addEventListener('click', () => showViewInConsultationScreen('form'));
+        
+        // --- HISTORY MANAGEMENT ---
+        function getHistory() {
+            try {
+                return JSON.parse(localStorage.getItem('baymaxHistory') || '[]');
+            } catch {
+                return [];
+            }
+        }
+
+        function saveToHistory(data) {
+            const history = getHistory();
+            history.unshift(data); // Add to the beginning
+            localStorage.setItem('baymaxHistory', JSON.stringify(history));
+        }
+
+        function renderHistoryList() {
+            const history = getHistory();
+            historyList.innerHTML = '';
+            if (history.length === 0) {
+                noHistoryMsg.style.display = 'block';
+                clearHistoryBtn.style.display = 'none';
+                return;
+            }
+            noHistoryMsg.style.display = 'none';
+            clearHistoryBtn.style.display = 'block';
+
+            history.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'history-item';
+                li.dataset.index = index;
+                const date = new Date(item.timestamp).toLocaleString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                const mainSymptom = item.formData.sintomas.split(/,|\./)[0].trim();
+                
+                li.innerHTML = `
+                    <p class="history-item-title">${mainSymptom || 'Consulta'}</p>
+                    <p class="history-item-date">${date}</p>
+                `;
+                historyList.appendChild(li);
+            });
+        }
+        
+        clearHistoryBtn.addEventListener('click', () => {
+            if (confirm('Tem certeza que deseja apagar todo o histórico? Esta ação não pode ser desfeita.')) {
+                localStorage.removeItem('baymaxHistory');
+                renderHistoryList();
+            }
+        });
+
+        historyList.addEventListener('click', e => {
+            const item = e.target.closest('.history-item');
+            if (item) {
+                const index = item.dataset.index;
+                const history = getHistory();
+                if (history[index]) {
+                    displayResults(history[index]);
+                    showScreen('consultation-screen');
+                }
+            }
+        });
+        
+        // --- CORE AI & FORM LOGIC ---
         consultationForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             const formData = new FormData(consultationForm);
             const data = Object.fromEntries(formData.entries());
 
-            consultationForm.classList.add('hidden');
-            aiResultContainer.classList.add('visible');
+            showViewInConsultationScreen('result');
             spinner.classList.add('visible');
             resultWrapper.style.display = 'none';
-            lastAiData = null;
+            currentConsultation = null;
 
-            let prompt = "Você é um assistente de pré-análise médica chamado Baymax.\n\n";
-            prompt += "**DADOS DO PACIENTE:**\n" + Object.entries(data).map(([key, value]) => `- ${key}: ${value || 'Não informado'}`).join('\n') + "\n\n";
-            prompt += "**SUA TAREFA:**\n";
-            prompt += "1.  **ANÁLISE TEXTUAL:** Escreva em Markdown (seções: ### Resumo do Caso, ### Possíveis Hipóteses, ### Recomendações).\n";
-            prompt += "2.  **IDENTIFIQUE ALERTAS:** Com base nos dados, crie uma lista de alertas. Use `nivel: 'atencao'` para avisos e `nivel: 'urgente'` para riscos que necessitam de ação rápida.\n";
-            prompt += "3.  **FORMATE A SAÍDA:** Responda **apenas** com um objeto JSON válido. Gere dados realistas e coerentes para os gráficos e alertas.\n";
-            prompt += '{\n  "analise_texto": "...",\n  "aviso_legal": "...",\n  "alertas": [\n    { "nivel": "atencao", "texto": "..." },\n    { "nivel": "urgente", "texto": "..." }\n  ],\n  "graficos": [\n    { "id": "graficoHipoteses", "tipo": "doughnut", "titulo": "Hipóteses Relativas", "dados": { "labels": ["(Hipótese 1)", "(Hipótese 2)"], "valores": [60, 40] } },\n    { "id": "graficoNivelUrgencia", "tipo": "gauge", "titulo": "Nível de Urgência", "dados": { "valor": 75, "nivel": "Moderada" } },\n    { "id": "graficoFatoresRisco", "tipo": "bar", "titulo": "Fatores de Risco", "dados": { "labels": ["Hist. Familiar", "Comorbidades"], "valores": [8, 6] } },\n    { "id": "graficoPerfilSintomas", "tipo": "radar", "titulo": "Perfil dos Sintomas", "dados": { "labels": ["Intensidade", "Frequência", "Impacto"], "valores": [7, 8, 6] } },\n    { "id": "graficoEspecialistas", "tipo": "bar", "titulo": "Especialistas Recomendados", "dados": { "labels": ["Clínico Geral", "Cardiologista"], "valores": [9, 7] } }\n  ]\n}';
+            let prompt = `Você é um assistente de pré-análise médica chamado Baymax. Analise os dados do paciente e retorne **apenas** um objeto JSON válido, sem nenhum texto ou formatação adicional.
+            
+**DADOS DO PACIENTE:**
+${Object.entries(data).map(([key, value]) => `- ${key}: ${value || 'Não informado'}`).join('\n')}
+
+**SUA TAREFA:**
+1.  **ANÁLISE TEXTUAL:** Escreva uma análise concisa em Markdown com as seções: "### Resumo do Caso", "### Possíveis Hipóteses" e "### Recomendações". Seja claro e objetivo.
+2.  **IDENTIFIQUE ALERTAS:** Crie uma lista de alertas. Use \`nivel: 'atencao'\` para avisos e \`nivel: 'urgente'\` para riscos que necessitam de ação rápida. Se não houver alertas, retorne um array vazio [].
+3.  **GERE DADOS PARA GRÁFICOS:** Com base na análise, crie dados realistas e coerentes para cada gráfico.
+    - **graficoHipoteses (doughnut):** Liste de 2 a 5 hipóteses diagnósticas mais prováveis como 'labels' e suas probabilidades relativas (somando 100) como 'valores'.
+    - **graficoNivelUrgencia (gauge):** Calcule um 'valor' de 0 a 100 para o nível de urgência e defina o 'nivel' correspondente ('Baixo', 'Moderado', 'Alto').
+    - **graficoFatoresRisco (bar):** Identifique 2 a 4 fatores de risco do paciente (ex: 'Hipertensão', 'Hist. Familiar', 'Tabagismo'). Para cada um, atribua uma pontuação de impacto de 0 a 10. Se não houver, use 'Nenhum Identificado' com valor 0.
+    - **graficoPerfilSintomas (radar):** Avalie os sintomas em 3 a 5 eixos (ex: 'Intensidade', 'Frequência', 'Impacto na Rotina') com pontuações de 0 a 10.
+    - **graficoEspecialistas (bar):** Recomende de 2 a 3 especialidades médicas relevantes e atribua um grau de recomendação de 0 a 10.
+4.  **AVISO LEGAL:** Inclua um aviso legal padrão.
+
+**ESTRUTURA JSON DE SAÍDA OBRIGATÓRIA:**
+{
+  "analise_texto": "### Resumo do Caso\\n...",
+  "aviso_legal": "Esta é uma análise preliminar gerada por IA e não substitui uma consulta médica. As informações são para fins educacionais. Procure um profissional de saúde para um diagnóstico preciso.",
+  "alertas": [
+    { "nivel": "atencao", "texto": "Exemplo de alerta de atenção." }
+  ],
+  "graficos": [
+    { "id": "graficoHipoteses", "tipo": "doughnut", "titulo": "Hipóteses Relativas", "dados": { "labels": ["Gastrite", "Refluxo", "Ansiedade"], "valores": [50, 30, 20] } },
+    { "id": "graficoNivelUrgencia", "tipo": "gauge", "titulo": "Nível de Urgência", "dados": { "valor": 65, "nivel": "Moderado" } },
+    { "id": "graficoFatoresRisco", "tipo": "bar", "titulo": "Fatores de Risco", "dados": { "labels": ["Hist. Familiar", "Estresse"], "valores": [7, 6] } },
+    { "id": "graficoPerfilSintomas", "tipo": "radar", "titulo": "Perfil dos Sintomas", "dados": { "labels": ["Intensidade", "Frequência", "Impacto"], "valores": [8, 9, 7] } },
+    { "id": "graficoEspecialistas", "tipo": "bar", "titulo": "Especialistas Recomendados", "dados": { "labels": ["Clínico Geral", "Gastroenterologista"], "valores": [9, 8] } }
+  ]
+}`;
             
             try {
                 const response = await fetch('https://chat-bot-bia-api.onrender.com/send-msg', {
@@ -343,27 +468,51 @@
                 });
                 if (!response.ok) throw new Error('Erro de comunicação com a API: ' + response.statusText);
                 const result = await response.json();
-                lastAiData = JSON.parse(result.msg);
-
-                resultWrapper.style.display = 'block';
                 
-                renderAlerts(lastAiData.alertas);
-                renderCharts(lastAiData.graficos);
-                document.getElementById('result-content').innerHTML = marked.parse((lastAiData.analise_texto || "") + "\n\n**Aviso Importante:**\n" + (lastAiData.aviso_legal || "Esta é uma análise preliminar. Consulte um médico."));
+                // Limpa o resultado para garantir que é um JSON válido
+                const cleanedResult = result.msg.replace(/```json/g, '').replace(/```/g, '').trim();
+                const aiData = JSON.parse(cleanedResult);
 
-                spinner.classList.remove('visible');
-                resetButton.style.display = 'inline-block';
-                exportPdfButton.style.display = 'inline-block';
+                const consultationData = {
+                    aiData: aiData,
+                    formData: data,
+                    timestamp: new Date().toISOString()
+                };
+
+                saveToHistory(consultationData);
+                displayResults(consultationData);
 
             } catch (error) {
                 console.error('Erro no processo de analise:', error);
                 spinner.classList.remove('visible');
                 const alertasContainer = document.getElementById('alertas-container');
-                alertasContainer.innerHTML = `<div class="alerta urgente">Ocorreu um erro fatal ao processar os dados. Tente novamente mais tarde. Detalhe: ${error.message}</div>`;
+                alertasContainer.innerHTML = `<div class="alerta urgente">Ocorreu um erro fatal ao processar os dados. A resposta da IA pode não ser um JSON válido. Tente novamente. Detalhe: ${error.message}</div>`;
                 resultWrapper.style.display = 'block';
-                resetButton.style.display = 'inline-block';
             }
         });
+        
+        function displayResults(consultationData) {
+            currentConsultation = consultationData; 
+            const aiData = consultationData.aiData;
+            
+            spinner.classList.remove('visible');
+            resultWrapper.style.display = 'block';
+
+            renderAlerts(aiData.alertas);
+            renderCharts(aiData.graficos);
+            document.getElementById('result-content').innerHTML = marked.parse((aiData.analise_texto || "") + "\n\n**Aviso Importante:**\n" + (aiData.aviso_legal || "Esta é uma análise preliminar. Consulte um médico."));
+
+            showViewInConsultationScreen('result');
+        }
+        
+        resetButton.addEventListener('click', () => {
+            consultationForm.reset();
+            showViewInConsultationScreen('form');
+        });
+
+        // --- CHART RENDERING ---
+        const gaugeTextPlugin = { id: 'gaugeText', beforeDraw(chart) { const { ctx, data } = chart; if (!data.datasets[0].gaugeData) return; const { text, fontColor } = data.datasets[0].gaugeData; const { width, height } = chart; ctx.save(); ctx.font = `600 1.2rem ${Chart.defaults.font.family}`; ctx.fillStyle = fontColor; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, width / 2, height / 2 + (height * 0.15)); ctx.restore(); } };
+        Chart.register(gaugeTextPlugin);
 
         function renderAlerts(alertas) {
             const container = document.getElementById('alertas-container');
@@ -376,8 +525,8 @@
             wrapper.className = 'alertas-wrapper';
             
             const icons = {
-                atencao: `<svg class="alerta-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-atencao)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`,
-                urgente: `<svg class="alerta-icon" width="22" height="22" viewBox="0 0 24 24" fill="var(--color-urgente)" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`
+                atencao: `<svg class="alerta-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-atencao)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`,
+                urgente: `<svg class="alerta-icon" width="22" height="22" viewBox="0 0 24 24" fill="var(--color-urgente)" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`
             };
 
             alertas.forEach(alerta => {
@@ -416,7 +565,7 @@
             graficosData.forEach(grafico => {
                 try {
                     const container = document.getElementById(grafico.id + '-container');
-                    if (!container) return;
+                    if (!container || !grafico.dados) return;
                     const canvas = document.getElementById(grafico.id);
                     container.style.display = 'block';
                     container.querySelector('h4').innerText = grafico.titulo;
@@ -440,7 +589,7 @@
                     } else if (grafico.tipo === 'bar') {
                         chartInstances[grafico.id] = new Chart(canvas, {
                             type: 'bar',
-                            data: { labels: grafico.dados.labels, datasets: [{ data: grafico.dados.valores, backgroundColor: chartColors.palette }] },
+                            data: { labels: grafico.dados.labels, datasets: [{ data: grafico.dados.valores, backgroundColor: chartColors.palette.slice(0, grafico.dados.labels.length) }] },
                             options: { ...baseOptions, indexAxis: 'y', layout: { padding: { left: 25, right: 15 } }, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, max: 10, grid: { color: chartColors.grid } }, y: { grid: { display: false } } } }
                         });
                     } else if (grafico.tipo === 'radar') {
@@ -456,20 +605,10 @@
             });
         }
         
-        resetButton.addEventListener('click', () => {
-            aiResultContainer.classList.remove('visible');
-            consultationForm.classList.remove('hidden');
-            consultationForm.reset();
-            document.getElementById('alertas-container').innerHTML = '';
-            Object.values(chartInstances).forEach(chart => chart.destroy());
-            chartInstances = {};
-            document.querySelectorAll('.grafico-container').forEach(c => c.style.display = 'none');
-            resetButton.style.display = 'none';
-            exportPdfButton.style.display = 'none';
-        });
-        
+        // --- PDF EXPORT (FULLY RESTORED AND FIXED) ---
         exportPdfButton.addEventListener('click', async () => {
-            if (!lastAiData) return;
+            if (!currentConsultation) return;
+            const aiData = currentConsultation.aiData;
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
@@ -480,21 +619,17 @@
             const CONTENT_WIDTH = PAGE_WIDTH - MARGIN * 2;
             let y = MARGIN;
 
-            // --- 1. PREPARAÇÃO PARA IMPRESSÃO (MODO SEGURO) ---
             const originalOptions = {};
-            const PDF_TEXT_COLOR = '#333333'; // Cor escura para garantir visibilidade
+            const PDF_TEXT_COLOR = '#333333';
 
-            // Itera nos gráficos para aplicar configurações seguras para o PDF
             Object.entries(chartInstances).forEach(([id, chart]) => {
-                originalOptions[id] = JSON.parse(JSON.stringify(chart.options)); // Cópia profunda das opções originais
-
-                // Desativa animações
+                originalOptions[id] = JSON.parse(JSON.stringify(chart.options)); 
                 chart.options.animation = false;
+                if (chart.options.plugins.legend) {
+                  chart.options.plugins.legend.display = true;
+                  chart.options.plugins.legend.labels.color = PDF_TEXT_COLOR;
+                }
                 
-                // Força a cor escura em todos os textos do gráfico
-                chart.options.plugins.legend.display = true;
-                chart.options.plugins.legend.labels.color = PDF_TEXT_COLOR;
-
                 if (chart.options.scales) {
                     Object.values(chart.options.scales).forEach(scale => {
                         if (scale.ticks) scale.ticks.color = PDF_TEXT_COLOR;
@@ -502,14 +637,12 @@
                         if (scale.grid) scale.grid.color = '#DDDDDD';
                     });
                 }
-                
                 chart.update();
             });
 
-            await new Promise(resolve => setTimeout(resolve, 500)); // Pausa para garantir a renderização
+            await new Promise(resolve => setTimeout(resolve, 500)); 
 
             try {
-                // --- 2. FUNÇÕES AUXILIARES DE RENDERIZAÇÃO ---
                 const checkPageBreak = (heightNeeded) => {
                     if (y + heightNeeded > PAGE_HEIGHT - MARGIN) {
                         doc.addPage();
@@ -538,50 +671,45 @@
                     y += blockHeight + 2;
                 };
 
-                // --- 3. CONSTRUÇÃO DO CONTEÚDO DO PDF ---
-
-                // Cabeçalho
                 doc.setFont('helvetica', 'bold').setFontSize(18).setTextColor('#D32F2F');
                 doc.text("Relatório de Pré-Análise Baymax", PAGE_WIDTH / 2, y, { align: 'center' });
                 y += 8;
                 renderWrappedText(new Date().toLocaleDateString('pt-BR', { dateStyle: 'full' }), { style: 'normal', size: 10, color: [100, 100, 100], align: 'center' });
                 y += 5;
 
-                // Seções de Texto (Dados, Alertas)
                 renderSectionHeader("Informações Fornecidas");
-                const formData = new FormData(consultationForm);
-                for (const [key, value] of formData.entries()) {
-                    if (value && value.trim() !== '') {
+                const formDataObject = currentConsultation.formData;
+                for (const key in formDataObject) {
+                    const value = formDataObject[key];
+                    if (value && String(value).trim() !== '') {
                         const label = document.querySelector(`label[for="${key}"]`)?.innerText || key;
                         renderWrappedText(`${label}:`, { style: 'bold', size: 9, color: [60, 60, 60] });
-                        renderWrappedText(value, { indent: 2, lineHeight: 1.2 });
+                        renderWrappedText(String(value), { indent: 2, lineHeight: 1.2 });
                     }
                 }
 
-                if (lastAiData.alertas && lastAiData.alertas.length > 0) {
+                if (aiData.alertas && aiData.alertas.length > 0) {
                     renderSectionHeader("Alertas Importantes");
-                    lastAiData.alertas.forEach(alerta => {
+                    aiData.alertas.forEach(alerta => {
                         const color = alerta.nivel === 'urgente' ? [211, 47, 47] : [255, 149, 0];
                         renderWrappedText(`[${alerta.nivel.toUpperCase()}] ${alerta.texto}`, { style: 'bold', color });
                     });
                 }
 
-                // Gráficos em Layout de Grid
                 renderSectionHeader("Análise Visual");
-                const validCharts = lastAiData.graficos.filter(g => chartInstances[g.id]);
+                const validCharts = aiData.graficos.filter(g => chartInstances[g.id]);
                 const chartWidth = (CONTENT_WIDTH - 10) / 2;
                 const chartHeight = chartWidth * 0.9;
 
                 for (let i = 0; i < validCharts.length; i++) {
                     const chartInfo = validCharts[i];
                     const chartCanvas = chartInstances[chartInfo.id].canvas;
-                    
                     const isLeftColumn = i % 2 === 0;
                     if (isLeftColumn) checkPageBreak(chartHeight + 20);
-
                     const xPos = isLeftColumn ? MARGIN : MARGIN + chartWidth + 10;
                     
-                    renderWrappedText(chartInfo.titulo, { x: xPos, style: 'bold', size: 9, color: [100, 100, 100], width: chartWidth });
+                    doc.setFont('helvetica', 'bold').setFontSize(9).setTextColor(100,100,100);
+                    doc.text(chartInfo.titulo, xPos, y);
                     
                     const ctx = chartCanvas.getContext('2d');
                     ctx.save();
@@ -591,17 +719,16 @@
                     ctx.restore();
                     
                     const imgData = chartCanvas.toDataURL('image/png', 1.0);
-                    doc.addImage(imgData, 'PNG', xPos, y, chartWidth, chartHeight);
+                    doc.addImage(imgData, 'PNG', xPos, y + 2, chartWidth, chartHeight);
 
                     if (!isLeftColumn || i === validCharts.length - 1) {
-                        y += chartHeight + 10;
+                        y += chartHeight + 12;
                     }
                 }
 
-                // Análise Textual
-                if (lastAiData.analise_texto) {
+                if (aiData.analise_texto) {
                     renderSectionHeader("Análise Detalhada e Recomendações");
-                    const lines = lastAiData.analise_texto.split('\n');
+                    const lines = aiData.analise_texto.split('\n');
                     lines.forEach(line => {
                         if (line.startsWith('### ')) {
                             y += 2;
@@ -617,9 +744,8 @@
                     });
                 }
                 
-                // Rodapé e Aviso
                 renderSectionHeader("Aviso Importante");
-                renderWrappedText(lastAiData.aviso_legal, { style: 'italic', size: 9 });
+                renderWrappedText(aiData.aviso_legal, { style: 'italic', size: 9 });
 
                 const pageCount = doc.internal.getNumberOfPages();
                 doc.setFont('helvetica', 'normal').setFontSize(8).setTextColor(150, 150, 150);
@@ -631,11 +757,11 @@
                 doc.save(`Relatorio-Baymax-${new Date().toISOString().split('T')[0]}.pdf`);
 
             } finally {
-                // --- 4. LIMPEZA E RESTAURAÇÃO ---
-                // Restaura as opções originais dos gráficos para a visualização na página
                 Object.entries(chartInstances).forEach(([id, chart]) => {
-                    chart.options = originalOptions[id];
-                    chart.update();
+                    if (originalOptions[id]) {
+                        chart.options = originalOptions[id];
+                        chart.update();
+                    }
                 });
             }
         });
